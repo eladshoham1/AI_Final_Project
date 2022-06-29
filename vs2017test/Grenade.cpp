@@ -1,7 +1,5 @@
-#include "Grenade.h"
 #include <math.h>
-
-
+#include "Grenade.h"
 
 Grenade::Grenade()
 {
@@ -13,57 +11,53 @@ Grenade::Grenade(double x, double y)
 	this->x = x;
 	this->y = y;
 	for (int i = 0; i < NUM_BULLETS; i++)
-		bullets[i] = new Bullet(x, y, i*teta);
+		this->bullets[i] = new Bullet(x, y, i*teta);
 
-	isExploded = false;
+	this->isExploded = false;
 }
-
 
 Grenade::~Grenade()
 {
 }
 
-void Grenade::Explode()
+void Grenade::explode()
 {
-	isExploded = true;
+	this->isExploded = true;
 	for (int i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->Fire();
+		this->bullets[i]->fire();
 }
 
-void Grenade::Exploding(int maze[MSZ][MSZ])
+void Grenade::exploding(int** maze)
 {
-	if (isExploded)
+	if (this->isExploded)
 		for (int i = 0; i < NUM_BULLETS; i++)
-			bullets[i]->Move(maze);
+			this->bullets[i]->move(maze);
 }
 
 void Grenade::show()
 {
 	for (int i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->show();
-
+		this->bullets[i]->show();
 }
 
-void Grenade::SimulateExplosion(int maze[MSZ][MSZ], double security_map[MSZ][MSZ], double damage)
+void Grenade::simulateExplosion(int** maze, double** securityMap, double damage)
 {
 	int i;
 
 	for (i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->Fire();
+		this->bullets[i]->fire();
 
-	for (i= 0; i < NUM_BULLETS; i++)
-		bullets[i]->SimulateMotion(maze, security_map, damage);
-
+	for (i = 0; i < NUM_BULLETS; i++)
+		this->bullets[i]->simulateMotion(maze, securityMap, damage);
 }
 
-void Grenade::SimulateVisibility(int maze[MSZ][MSZ], double visibility_map[MSZ][MSZ])
+void Grenade::simulateVisibility(int** maze, double** visibilityMap)
 {
 	int i;
 
 	for (i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->Fire();
+		this->bullets[i]->fire();
 
 	for (i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->SimulateVisibility(maze, visibility_map);
-
+		this->bullets[i]->simulateVisibility(maze, visibilityMap);
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 class Cell
 {
 private:
@@ -8,19 +9,18 @@ private:
 	double f, g, h;
 public:
 	Cell();
-	Cell(int r, int c, Cell* p,double g,int tr, int tc);
-	
+	Cell(int r, int c, Cell* p, double g, int tr, int tc);
 	~Cell();
-	int getRow() { return row; }
-	int getCol() { return col; }
-	int getTargetRow() { return row; }
-	int getTargetCol() { return col; }
-	Cell* getParent() { return parent; }
-	void ComputeH();
-	void ComputeF() { f = g + h; }
-	double getF() { return f; }
-	double getG() { return g; }
-	bool operator == (const Cell& other) { return row == other.row && col == other.col; }
-	void setG(double newG) { g = newG; }
-};
 
+	int getRow() { return this->row; }
+	int getCol() { return this->col; }
+	int getTargetRow() { return this->targetRow; }
+	int getTargetCol() { return this->targetCol; }
+	Cell* getParent() { return this->parent; }
+	void ComputeH();
+	void ComputeF() { this->f = this->g + this->h; }
+	double getF() { return this->f; }
+	double getG() { return this->g; }
+	bool operator == (const Cell& other) { return this->row == other.row && this->col == other.col; }
+	void setG(double g) { this->g = g; }
+};

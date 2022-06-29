@@ -118,21 +118,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AttackEnemy.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CompareCells.cpp" />
+    <ClCompile Include="FillAmmo.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="ReloadMagazine.cpp" />
+    <ClCompile Include="Rest.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RunAway.cpp" />
+    <ClCompile Include="Squire.cpp" />
+    <ClCompile Include="Team.cpp" />
+    <ClCompile Include="Warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AttackEnemy.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CompareCells.h" />
     <ClInclude Include="Definitions.h" />
+    <ClInclude Include="FillAmmo.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="glut.h" />
     <ClInclude Include="Grenade.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="NPC.h" />
+    <ClInclude Include="ReloadMagazine.h" />
+    <ClInclude Include="Rest.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="RunAway.h" />
+    <ClInclude Include="Squire.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="Team.h" />
+    <ClInclude Include="Warrior.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

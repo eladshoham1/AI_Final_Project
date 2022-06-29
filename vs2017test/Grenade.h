@@ -6,7 +6,7 @@ const int NUM_BULLETS = 100;
 class Grenade
 {
 
-private: 
+private:
 	double x, y;
 	Bullet* bullets[NUM_BULLETS];
 	bool isExploded;
@@ -14,11 +14,11 @@ public:
 	Grenade();
 	Grenade(double x, double y);
 	~Grenade();
-	bool getIsExploded() { return isExploded; }
-	void Explode();
-	void Exploding(int maze[MSZ][MSZ]);
-	void show();
-	void SimulateExplosion(int maze[MSZ][MSZ], double security_map[MSZ][MSZ], double damage);
-	void SimulateVisibility(int maze[MSZ][MSZ], double visibility_map[MSZ][MSZ]);
-};
 
+	bool getIsExploded() { return this->isExploded; }
+	void explode();
+	void exploding(int** maze);
+	void show();
+	void simulateExplosion(int** maze, double** securityMap, double damage);
+	void simulateVisibility(int** maze, double** visibilityMap);
+};

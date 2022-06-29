@@ -1,7 +1,6 @@
-#include "Bullet.h"
-#include "glut.h"
 #include <math.h>
-
+#include "glut.h"
+#include "Bullet.h"
 
 Bullet::Bullet()
 {
@@ -12,73 +11,69 @@ Bullet::Bullet(double x, double y, double angle)
 {
 	this->x = x;
 	this->y = y;
-	direction_angle = angle;
-	isMoving = false;
+	this->directionAngle = angle;
+	this->isMoving = false;
+}
+
+Bullet::~Bullet()
+{
 }
 
 void Bullet::show()
 {
 	glColor3d(0, 0, 0);
 	glBegin(GL_POLYGON);
-		glVertex2d(x - 0.5, y);
-		glVertex2d(x , y + 0.5);
-		glVertex2d(x + 0.5, y);
-		glVertex2d(x , y - 0.5);
+	glVertex2d(x - 0.5, y);
+	glVertex2d(x, y + 0.5);
+	glVertex2d(x + 0.5, y);
+	glVertex2d(x, y - 0.5);
 	glEnd();
 }
 
-
-Bullet::~Bullet()
-{
-}
-
-void Bullet::Move(int maze[MSZ][MSZ])
+void Bullet::move(int** maze)
 {
 	double dx, dy;
 	if (isMoving)
 	{
-		dx = cos(direction_angle);
-		dy = sin(direction_angle);
+		dx = cos(this->directionAngle);
+		dy = sin(this->directionAngle);
 		x += dx * SPEED;
 		y += dy * SPEED;
 		if (maze[(int)y][(int)x] == WALL)
 			isMoving = false;
 	}
-
 }
 
-void Bullet::SimulateMotion(int maze[MSZ][MSZ], double security_map[MSZ][MSZ], double damage)
+void Bullet::simulateMotion(int** maze, double** securityMap, double damage)
 {
 	double dx, dy;
-	dx = cos(direction_angle);
-	dy = sin(direction_angle);
+	dx = cos(directionAngle);
+	dy = sin(directionAngle);
 	while (isMoving)
 	{
 		x += dx * SPEED;
 		y += dy * SPEED;
 
-		security_map[(int)y][(int)x] += damage; // drawing in map
+		securityMap[(int)y][(int)x] += damage; // drawing in map
 
 		if (maze[(int)y][(int)x] == WALL)
 			isMoving = false;
 	}
-
 }
 
-void Bullet::SimulateVisibility(int maze[MSZ][MSZ], double visibility_map[MSZ][MSZ])
+void Bullet::simulateVisibility(int** maze, double** visibilityMap)
 {
 	double dx, dy;
-	dx = cos(direction_angle);
-	dy = sin(direction_angle);
+	dx = cos(directionAngle);
+	dy = sin(directionAngle);
 	while (isMoving)
 	{
 		x += dx * SPEED;
 		y += dy * SPEED;
 
-		visibility_map[(int)y][(int)x] = 1; // drawing in map
+		visibilityMap[(int)y][(int)x] = 1; // drawing in map
 
 		if (maze[(int)y][(int)x] == WALL)
 			isMoving = false;
 	}
-
 }

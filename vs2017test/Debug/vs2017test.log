@@ -1,11 +1,3 @@
-﻿  Bullet.cpp
-  Cell.cpp
-  CompareCells.cpp
-  Grenade.cpp
-  main.cpp
-c:\users\elads\desktop\degree\ai\final project\vs2017test\main.cpp(38): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
-c:\users\elads\desktop\degree\ai\final project\vs2017test\main.cpp(43): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\elads\desktop\degree\ai\final project\vs2017test\main.cpp(400): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Room.cpp
-  Generating Code...
+﻿  Room.cpp
+c:\users\elads\desktop\degree\ai\final project\vs2017test\room.h(10): warning C4305: 'initializing': truncation from 'double' to 'const float'
   vs2017test.vcxproj -> C:\Users\elads\Desktop\degree\AI\Final Project\Debug\vs2017test.exe
