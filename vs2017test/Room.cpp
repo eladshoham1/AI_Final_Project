@@ -1,38 +1,63 @@
 #include "Room.h"
 
-Room::Room()
+Room::Room(int width, int height, Point&& center)
 {
+	this->width = width;
+	this->height = height;
+	this->center = center;
+}
+
+Room::Room(ifstream& in)
+{
+	in >> *this;
 }
 
 Room::~Room()
 {
 }
 
-void Room::addObstacles(int** maze)
+void Room::addObjects(int** maze, int numOfObjects, MapCell object)
 {
-	int roomSize, numOfObstacles, row, col, maxRow, minRow, maxCol, minCol;
-	roomSize = height * width;
-	numOfObstacles = rand() % ((int)ceil(roomSize * OBSTACLES_PRECENTAGE)) + MIN_OBSTACLES;
-	maxRow = centerY + height / 2;
-	minRow = centerY - height / 2;
-	maxCol = centerX + width / 2;
-	minCol = centerX - width / 2;
+	int row, col, minRow, maxRow, minCol, maxCol;
+	minRow = this->center.getY() - this->height / 2;
+	maxRow = this->center.getY() + this->height / 2;
+	minCol = this->center.getX() - this->width / 2;
+	maxCol = this->center.getX() + this->width / 2;
 
-	for (int i = 0; i < numOfObstacles; i++)
+	for (int i = 0; i < numOfObjects; i++)
 	{
 		row = minRow + (rand() % (maxRow - minRow));
 		col = minCol + (rand() % (maxCol - minCol));
-		maze[row][col] = OBSTACLE;
+		maze[row][col] = object;
 	}
 }
 
-void Room::addMeToMaze(int** maze)
+void Room::initRoom(int** maze)
 {
-	int i, j;
-
-	for (i = centerY - height / 2; i <= centerY + height / 2; i++)
-		for (j = centerX - width / 2; j <= centerX + width / 2; j++)
+	for (int i = this->center.getY() - this->height / 2; i <= this->center.getY() + this->height / 2; i++)
+		for (int j = this->center.getX() - this->width / 2; j <= this->center.getX() + this->width / 2; j++)
 			maze[i][j] = SPACE;
 
-	addObstacles(maze);
+	this->addObjects(maze, rand() % ((int)ceil(height * width * OBSTACLES_PRECENTAGE)) + MIN_OBSTACLES, OBSTACLE);
+	this->addObjects(maze, NUM_OF_AMMO_STORAGE, AMMO);
+	this->addObjects(maze, NUM_OF_HEALTH_STORAGE, HEALTH);
+}
+
+ostream & operator<<(ostream& os, const Room& room)
+{
+	if (typeid(os) == typeid(ofstream))
+		os << room.width << " " << room.height << " " << room.center;
+
+	return os;
+}
+
+istream & operator>>(istream& in, Room& room)
+{
+	if (typeid(in) == typeid(ifstream))
+	{
+		ifstream& inFile = dynamic_cast<ifstream&>(in);
+		in >> room.width >> room.height >> room.center;
+	}
+
+	return in;
 }

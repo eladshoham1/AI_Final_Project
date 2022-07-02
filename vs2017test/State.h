@@ -1,5 +1,4 @@
 #pragma once
-#include "NPC.h"
 
 class NPC;
 

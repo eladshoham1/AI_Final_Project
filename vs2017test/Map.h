@@ -14,18 +14,18 @@ using namespace std;
 
 class Map
 {
+public:
+	static constexpr int MSZ = 100;
 private:
+	static constexpr int NUM_OF_ROOMS = 8;
 	static constexpr int NUM_OF_TEAMS = 2;
 	int** maze;
-	Team* teams[NUM_OF_TEAMS];
 	double** securityMap;
 	double** visibilityMap;
-	Room* rooms;
-	bool underConstruction;
-	int r1;
-	int r2;
-	Bullet* pBullet;
-	Grenade* pGrenade;
+	Team* teams[NUM_OF_TEAMS];
+	Room* rooms[NUM_OF_ROOMS];
+	//Bullet* pBullet;
+	//Grenade* pGrenade;
 
 	void initMap();
 
@@ -36,20 +36,20 @@ public:
 	int** getMaze() const { return this->maze; }
 	double** getSecurityMap() const { return this->securityMap; }
 	double** getVisibilityMap() const { return this->visibilityMap; }
-	Room* getRooms() const { return this->rooms; }
-	Bullet* getPBullet() const { return this->pBullet; }
-	Grenade* getPGrenade() const { return this->pGrenade; }
-	bool hasOverlap(int w, int h, int x, int y, int index);
+	Room** getRooms() { return this->rooms; }
+	//Bullet* getPBullet() const { return this->pBullet; }
+	//Grenade* getPGrenade() const { return this->pGrenade; }
+	bool hasOverlap(int width, int height, int x, int y, int index);
 	void setupRooms();
 	void saveMapToFile(const char* fileName);
 	void checkNeighbor(int row, int col, Cell* pcurrent, priority_queue <Cell, vector<Cell>, CompareCells>&pq, vector<Cell> &grays, vector<Cell> &blacks);
 	void restorePath(Cell* ps);
 	void digPath(int index1, int index2);
 	void digPassages();
+	void placeTeams();
 	void createVisibilityMap();
 	void createSecurityMap();
 	void showMaze();
-	void showStartAndTarget();
 	void play();
 	friend ostream& operator<<(ostream& os, const Map& map);
 	friend istream& operator>>(istream& in, Map& map);

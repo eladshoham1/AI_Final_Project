@@ -1,8 +1,7 @@
 #pragma once
 
-enum cell { WALL, SPACE, OBSTACLE };
+enum MapCell { WALL, SPACE, OBSTACLE, AMMO, HEALTH, SOLDIER_TEAM_ONE, SUPPORT_TEAM_OME, SOLDIER_TEAM_TWO, SUPPORT_TEAM_TWO };
 
 const int WINDOW_WIDTH = 700;
 const int WINDOW_HEIGHT = 700;
-const int MSZ = 100; // maze size
-const int NUM_ROOMS = 8;
+const double PI = 3.141592653589793238463;

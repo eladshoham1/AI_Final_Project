@@ -12,9 +12,9 @@ void init()
 	glClearColor(1, 1, 1, 0);// color of window background
 
 	// set the main axes
-	glOrtho(0, MSZ, 0, MSZ, -1, 1);
+	glOrtho(0, Map::MSZ, 0, Map::MSZ, -1, 1);
 
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 }
 
 void display()
@@ -38,7 +38,7 @@ void menu(int choice)
 	gameManager->setGameState((GameManager::state)choice);
 }
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE); // double buffering for animation
@@ -61,4 +61,5 @@ void main(int argc, char* argv[])
 	gameManager = new GameManager("map.txt");
 
 	glutMainLoop(); // starts window queue of events
+	return EXIT_SUCCESS;
 }

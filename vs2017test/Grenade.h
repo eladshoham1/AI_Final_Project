@@ -1,18 +1,18 @@
 #pragma once
+#include "Ammo.h"
 #include "Bullet.h"
 
-const int NUM_BULLETS = 100;
-
-class Grenade
+class Grenade : public Ammo
 {
 
 private:
-	double x, y;
-	Bullet* bullets[NUM_BULLETS];
+	static constexpr int NUM_OF_BULLETS = 30;
+	Bullet* bullets[NUM_OF_BULLETS];
 	bool isExploded;
+
 public:
 	Grenade();
-	Grenade(double x, double y);
+	Grenade(Point position);
 	~Grenade();
 
 	bool getIsExploded() { return this->isExploded; }

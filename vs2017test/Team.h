@@ -1,18 +1,26 @@
 #pragma once
 #include <iostream>
-#include "Warrior.h"
-#include "Squire.h"
+#include "Soldier.h"
+#include "Support.h"
+#include "Room.h"
 
 using namespace std;
 
 class Team
 {
-private:
-	Warrior *warriors;
-	Squire *pSquire;
 public:
-	Team();
+	static constexpr int NUM_OF_SOLDIERS = 2;
+private:
+	Soldier *soldiers[NUM_OF_SOLDIERS];
+	Support *support;
+	int id;
+
+public:
+	Team() = delete;
+	Team(int id);
 	~Team();
 
-	void play();
+	void initTeam(int** maze, Room* room);
+	void play(int** maze);
+	void show();
 };

@@ -1,3 +1,11 @@
-﻿  Room.cpp
-c:\users\elads\desktop\degree\ai\final project\vs2017test\room.h(10): warning C4305: 'initializing': truncation from 'double' to 'const float'
+﻿  AttackEnemy.cpp
+  Bullet.cpp
+  GameManager.cpp
+  Grenade.cpp
+  Map.cpp
+  Soldier.cpp
+  Support.cpp
+  Team.cpp
+  main.cpp
+  Generating Code...
   vs2017test.vcxproj -> C:\Users\elads\Desktop\degree\AI\Final Project\Debug\vs2017test.exe

@@ -1,34 +1,31 @@
 #pragma once
+#include "Point.h"
 #include "State.h"
-
-class State;
+#include "AttackEnemy.h"
 
 class NPC
 {
-private:
-	/*double x, y;
-	double targetX, targetY;
-	double dx, dy; // vector to the target
-	double numWood;
-	double hp;
-	bool isMoving, isGettingWood, atHome, goingHome;
+public:
+	static constexpr int MAX_HP = 100;
+protected:
+	Point position;
+	Point target;
 	State* pCurrentState;
-	State* pInterruptedState;*/
+	State* pInterruptedState;
+	bool isMoving;
+	double hp;
 
 public:
 	NPC();
-	~NPC();
-	//NPC(double x, double y);
-	/*void DoSomeThing(); // kind of MAIN function
-	void setIsMoving(bool value) { isMoving = value; }
-	void setDestination(double destX, double destY);
-	void setIsGettingWood(bool value) { isGettingWood = value; }
-	void setCurrentState(State* ps) { pCurrentState = ps; }
-	State* getCurrentState() { return pCurrentState; }
-	double getHP() { return hp; }
-	void setAtHome(bool value) { atHome = value; }
-	void setGoingHome(bool value) { goingHome = value; }
-	void setInterruptedState(State* ps) { pInterruptedState = ps; }
-	State* getInterruptedState() { return pInterruptedState; }
-	void DrawMe();*/
+	NPC(Point position);
+	virtual ~NPC();
+
+	State* getCurrentState() const { return this->pCurrentState; }
+	void setCurrentState(State* ps) { this->pCurrentState = ps; }
+	State* getInterruptedState() const { return this->pInterruptedState; }
+	void setInterruptedState(State* ps) { this->pInterruptedState = ps; }
+	double getHP() const { return this->hp; }
+	bool getIsMoving() const { return this->isMoving; }
+	virtual void play(int** maze) = 0;
+	virtual void show() = 0;
 };

@@ -1,17 +1,20 @@
 #pragma once
+#include <math.h>
+#include "glut.h"
 #include "Definitions.h"
-const double SPEED = 0.1;
+#include "Ammo.h"
 
-class Bullet
+class Bullet : public Ammo
 {
 
 private:
-	double x, y;
+	static constexpr float SPEED = 0.1f;
 	double directionAngle;
 	bool isMoving;
+
 public:
 	Bullet();
-	Bullet(double x, double y, double angle);
+	Bullet(Point position, double directionAngle);
 	~Bullet();
 
 	void show();

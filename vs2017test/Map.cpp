@@ -3,6 +3,8 @@
 Map::Map()
 {
 	initMap();
+	setupRooms();
+	placeTeams();
 }
 
 Map::Map(const char* fileName)
@@ -19,13 +21,9 @@ Map::Map(const char* fileName)
 	{
 		setupRooms();
 		digPassages();
-		/*for (int i = 0; i < MSZ; i++) {
-			for (int j = 0; j < MSZ; j++) {
-				cout << this->maze[i][j] << " ";
-			}
-		}*/
 		saveMapToFile(fileName);
 	}
+	placeTeams();
 }
 
 Map::~Map()
@@ -44,9 +42,6 @@ Map::~Map()
 
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
 		delete this->teams[i];
-	delete this->teams;
-
-	delete this->rooms;
 }
 
 void Map::initMap()
@@ -63,11 +58,12 @@ void Map::initMap()
 	for (int i = 0; i < MSZ; i++)
 		this->visibilityMap[i] = new double[MSZ] {0};
 
-	this->rooms = new Room[NUM_ROOMS];
+	for (int i = 0; i < NUM_OF_TEAMS; i++)
+		this->teams[i] = new Team((int)SOLDIER_TEAM_ONE + i * 2);
 }
 
 // checks for overlapping with rooms of lower indices
-bool Map::hasOverlap(int w, int h, int x, int y, int index)
+bool Map::hasOverlap(int width, int height, int x, int y, int index)
 {
 	bool overlaps = false;
 	int i;
@@ -75,9 +71,9 @@ bool Map::hasOverlap(int w, int h, int x, int y, int index)
 
 	for (i = 0; i < index && !overlaps; i++)
 	{
-		dx = abs(rooms[i].getCenterX() - x);
-		dy = abs(rooms[i].getCenterY() - y);
-		if (dx < w / 2 + rooms[i].getWidth() / 2 + gap && dy < h / 2 + rooms[i].getHeight() / 2 + gap)
+		dx = abs(rooms[i]->getCenter().getX() - x);
+		dy = abs(rooms[i]->getCenter().getY() - y);
+		if (dx < width / 2 + rooms[i]->getWidth() / 2 + gap && dy < height / 2 + rooms[i]->getHeight() / 2 + gap)
 			overlaps = true;
 	}
 	return overlaps;
@@ -85,21 +81,18 @@ bool Map::hasOverlap(int w, int h, int x, int y, int index)
 
 void Map::setupRooms()
 {
-	int w, h, x, y;
-	for (int r = 0; r < NUM_ROOMS; r++)
+	int width, height, x, y;
+	for (int i = 0; i < NUM_OF_ROOMS; i++)
 	{
 		do
 		{
-			w = 8 + rand() % 25;
-			h = 8 + rand() % 25;
-			x = 2 + w / 2 + rand() % (MSZ - 4 - w);
-			y = 2 + h / 2 + rand() % (MSZ - 4 - h);
-		} while (hasOverlap(w, h, x, y, r));
-		this->rooms[r].setWidth(w);
-		this->rooms[r].setHeight(h);
-		this->rooms[r].setCenterX(x);
-		this->rooms[r].setCenterY(y);
-		this->rooms[r].addMeToMaze(this->maze);
+			width = 8 + rand() % 25;
+			height = 8 + rand() % 25;
+			x = 2 + width / 2 + rand() % (MSZ - 4 - width);
+			y = 2 + height / 2 + rand() % (MSZ - 4 - height);
+		} while (hasOverlap(width, height, x, y, i));
+		this->rooms[i] = new Room(width, height, Point(x, y));
+		this->rooms[i]->initRoom(this->maze);
 	}
 }
 
@@ -121,7 +114,7 @@ void Map::saveMapToFile(const char* fileName)
 //         2: if  F of the new found neghbor IS better (<) then we have to update the cell parameters!!!
 void Map::checkNeighbor(int row, int col, Cell* pcurrent, priority_queue <Cell, vector<Cell>, CompareCells>&pq, vector<Cell> &grays, vector<Cell> &blacks)
 {
-	double cost, cheap = 0.1, expensive = 0.4;
+	double cost, cheap = 0.1, expensive = 1.4;
 	vector <Cell>::iterator itrb;
 	vector <Cell>::iterator itrg;
 
@@ -186,8 +179,8 @@ void Map::restorePath(Cell* ps)
 // creates path from rooms[index1] to rooms[index2] using A*
 void Map::digPath(int index1, int index2)
 {
-	Cell* startingCell = new Cell(this->rooms[index1].getCenterY(), this->rooms[index1].getCenterX(),
-		nullptr, 0, this->rooms[index2].getCenterY(), this->rooms[index2].getCenterX());
+	Cell* startingCell = new Cell(this->rooms[index1]->getCenter().getY(), this->rooms[index1]->getCenter().getX(),
+		nullptr, 0, this->rooms[index2]->getCenter().getY(), this->rooms[index2]->getCenter().getX());
 
 	Cell* pcurrent = nullptr;
 	int currentRow, currentCol;
@@ -209,7 +202,7 @@ void Map::digPath(int index1, int index2)
 		// pq is not empty so pick the top Cell
 		pcurrent = new Cell(pq.top());
 		// check if current is target
-		if (pcurrent->getRow() == this->rooms[index2].getCenterY() && pcurrent->getCol() == this->rooms[index2].getCenterX())
+		if (pcurrent->getRow() == this->rooms[index2]->getCenter().getY() && pcurrent->getCol() == this->rooms[index2]->getCenter().getX())
 		{
 			restorePath(pcurrent);
 			cout << "The path from room " << index1 << " to room " << index2 << " has been found\n";
@@ -247,16 +240,22 @@ void Map::digPassages()
 {
 	int i, j;
 
-	for (i = 0; i < NUM_ROOMS; i++)
+	for (i = 0; i < NUM_OF_ROOMS; i++)
 	{
-		for (j = i + 1; j < NUM_ROOMS; j++)
+		for (j = i + 1; j < NUM_OF_ROOMS; j++)
 			digPath(i, j);
 	}
 }
 
+void Map::placeTeams()
+{
+	for (int i = 0; i < NUM_OF_TEAMS; i++)
+		this->teams[i]->initTeam(this->maze, this->rooms[rand() % NUM_OF_ROOMS]);
+}
+
 void Map::createVisibilityMap()
 {
-	this->pGrenade->simulateVisibility(maze, visibilityMap);
+	//this->pGrenade->simulateVisibility(maze, visibilityMap);
 }
 
 void Map::createSecurityMap()
@@ -268,7 +267,7 @@ void Map::createSecurityMap()
 
 	for (i = 0; i < num_simulations; i++)
 	{
-		g = new Grenade(rand() % MSZ, rand() % MSZ);
+		g = new Grenade(Point(rand() % MSZ, rand() % MSZ));
 		g->simulateExplosion(this->maze, this->securityMap, damage);
 	}
 }
@@ -276,6 +275,7 @@ void Map::createSecurityMap()
 void Map::showMaze()
 {
 	int i, j;
+	double d, v;
 
 	for (i = 0; i < MSZ; i++)
 	{
@@ -287,13 +287,31 @@ void Map::showMaze()
 			case WALL:
 				glColor3d(0.1, 0.1, 0.1); // dark gray
 				break;
+			case SPACE:
+				d = this->securityMap[i][j];
+				v = this->visibilityMap[i][j];
+				glColor3d(1 - d - 0.5 * v, 1 - d, 1 - d - 0.5 * v); // white - security map value - visibility map value
+				break;
 			case OBSTACLE:
 				glColor3d(0.4, 0.4, 0.4); // gray
 				break;
-			case SPACE:
-				double d = this->securityMap[i][j];
-				double v = this->visibilityMap[i][j];
-				glColor3d(1 - d - 0.5*v, 1 - d, 1 - d - 0.5*v); // white - security map value - visibility map value
+			case AMMO:
+				glColor3d(0.1, 0.7, 0.4);
+				break;
+			case HEALTH:
+				glColor3d(0.2, 0.6, 0.6);
+				break;
+			case SOLDIER_TEAM_ONE:
+				glColor3d(0.1, 0.1, 0.3);
+				break;
+			case SUPPORT_TEAM_OME:
+				glColor3d(0.3, 0.3, 0.5);
+				break;
+			case SOLDIER_TEAM_TWO:
+				glColor3d(0.6, 0.6, 0.1);
+				break;
+			case SUPPORT_TEAM_TWO:
+				glColor3d(0.8, 0.8, 0.3);
 				break;
 			}// switch
 			// now show the cell as plygon (square)
@@ -306,73 +324,32 @@ void Map::showMaze()
 		}// for
 	}
 
-	if (this->underConstruction)
-		showStartAndTarget();
+	for (int i = 0; i < NUM_OF_TEAMS; i++)
+		this->teams[i]->show();
 
-	if (this->pBullet != nullptr)
+	/*if (this->pBullet != nullptr)
 		this->pBullet->show();
 	if (this->pGrenade != nullptr)
-		this->pGrenade->show();
-}
-
-void Map::showStartAndTarget()
-{
-	int i, j;
-	// start
-	i = this->rooms[r1].getCenterY();
-	j = this->rooms[r1].getCenterX();
-	glColor3d(0, 0, 1); // blue
-	glBegin(GL_POLYGON);
-	glVertex2d(j, i); // left-bottom corner
-	glVertex2d(j, i + 1); // left-top corner
-	glVertex2d(j + 1, i + 1); // right-top corner
-	glVertex2d(j + 1, i); // right-bottom corner
-	glEnd();
-
-	// target
-	i = this->rooms[r2].getCenterY();
-	j = this->rooms[r2].getCenterX();
-	glColor3d(1, 0.7, 0); // orange
-	glBegin(GL_POLYGON);
-	glVertex2d(j, i); // left-bottom corner
-	glVertex2d(j, i + 1); // left-top corner
-	glVertex2d(j + 1, i + 1); // right-top corner
-	glVertex2d(j + 1, i); // right-bottom corner
-	glEnd();
+		this->pGrenade->show();*/
 }
 
 void Map::play()
 {
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
-		teams[i]->play();
-	/*if (this->underConstruction)
-	{
-		digPath(this->r1, this->r2);
-		// prepare for the next A*
-		this->r2++;
-		if (this->r2 >= NUM_ROOMS)
-		{
-			this->r1++;
-			this->r2 = this->r1 + 1;
-			if (this->r1 + 1 >= NUM_ROOMS)
-				this->underConstruction = false;
-		}
-	}
-	// bullet
-	if (this->pBullet != nullptr && this->pBullet->getIsMoving())
-		this->pBullet->move(this->maze);
-	if (this->pGrenade != nullptr && this->pGrenade->getIsExploded())
-		this->pGrenade->exploding(this->maze);*/
+		teams[i]->play(this->maze);
 }
 
 ostream& operator<<(ostream& os, const Map& map)
 {
 	int** mapMaze = map.getMaze();
-	for (int i = 0; i < MSZ; i++)
+	for (int i = 0; i < Map::MSZ; i++)
 	{
-		for (int j = 0; j < MSZ; j++)
+		for (int j = 0; j < Map::MSZ; j++)
 			os << mapMaze[i][j] << " ";
 	}
+	for (int i = 0; i < Map::NUM_OF_ROOMS; i++)
+		os << *map.rooms[i] << endl;
+
 	return os;
 }
 
@@ -382,11 +359,13 @@ istream& operator>>(istream& in, Map& map)
 	{
 		ifstream& inFile = dynamic_cast<ifstream&>(in);
 		int** mapMaze = map.getMaze();
-		for (int i = 0; i < MSZ; i++)
+		for (int i = 0; i < Map::MSZ; i++)
 		{
-			for (int j = 0; j < MSZ; j++)
+			for (int j = 0; j < Map::MSZ; j++)
 				inFile >> mapMaze[i][j];
 		}
+		for (int i = 0; i < Map::NUM_OF_ROOMS; i++)
+			map.rooms[i] = new Room(inFile);
 	}
 	return in;
 }
