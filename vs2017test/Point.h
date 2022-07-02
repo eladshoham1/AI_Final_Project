@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include "Definitions.h"
 
 using namespace std;
 
@@ -8,6 +9,7 @@ class Point
 {
 private:
 	int x, y;
+
 public:
 	Point();
 	Point(int x, int y);
@@ -18,6 +20,8 @@ public:
 	int getY() const { return this->y; }
 	void setY(int y) { this->y = y; }
 	void setPoint(int x, int y);
+	double euclideanDistance(const Point& target);
+	bool operator==(const Point& other);
 	friend ostream & operator<<(ostream& os, const Point& point);
 	friend istream & operator>>(istream& in, Point& point);
 };

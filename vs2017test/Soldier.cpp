@@ -23,7 +23,7 @@ void Soldier::play(int** maze)
 	if (dynamic_cast<AttackEnemy*>(this->pCurrentState))
 	{
 		shoot(maze);
-		throwGrenade(maze);
+		//throwGrenade(maze);
 	}
 }
 
@@ -39,8 +39,10 @@ void Soldier::shoot(int** maze)
 {
 	if (this->numOfBullets > 0)
 	{
+		cout << this->numOfBullets << endl;
+		this->pBullet->fire();
 		if (this->pBullet != nullptr && this->pBullet->getIsMoving())
-			this->pBullet->fire();
+			this->pBullet->move(maze);
 		this->numOfBullets--;
 	}
 }
@@ -49,6 +51,7 @@ void Soldier::throwGrenade(int** maze)
 {
 	if (this->numOfGrenades > 0)
 	{
+		this->pGrenade->explode();
 		if (this->pGrenade != nullptr && this->pGrenade->getIsExploded())
 			this->pGrenade->exploding(maze);
 		this->numOfGrenades--;

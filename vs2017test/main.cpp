@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE); // double buffering for animation
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-	glutInitWindowPosition(700, 100);
+	glutInitWindowPosition(700, 50);
 	glutCreateWindow("Final Project");
 
 	glutDisplayFunc(display); // sets display function as window refresh function

@@ -3,6 +3,8 @@
 #include <fstream>
 #include "Definitions.h"
 #include "Point.h"
+#include "AmmoStorage.h"
+#include "HealthStorage.h"
 
 using namespace std;
 
@@ -15,6 +17,8 @@ private:
 	static constexpr int NUM_OF_HEALTH_STORAGE = 2;
 	int width, height;
 	Point center;
+	AmmoStorage *ammoStorages[NUM_OF_AMMO_STORAGE];
+	HealthStorage *healthStorages[NUM_OF_HEALTH_STORAGE];
 
 	void addObjects(int** maze, int numOfObjects, MapCell object);
 

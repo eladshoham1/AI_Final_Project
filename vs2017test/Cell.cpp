@@ -14,15 +14,15 @@ Cell::Cell(int r, int c, Cell *p, double g, int tr, int tc)
 	this->g = g;
 	this->targetRow = tr;
 	this->targetCol = tc;
-	this->ComputeH();
-	this->ComputeF();
+	this->computeH();
+	this->computeF();
 }
 
 Cell::~Cell()
 {
 }
 
-void Cell::ComputeH()
+void Cell::computeH()
 {
 	this->h = sqrt(pow(row - targetRow, 2) + pow(col - targetCol, 2));
 }

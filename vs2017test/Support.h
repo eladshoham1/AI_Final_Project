@@ -2,6 +2,7 @@
 #include <queue>
 #include "NPC.h"
 #include "Soldier.h"
+#include "Cell.h"
 
 class Support : public NPC
 {

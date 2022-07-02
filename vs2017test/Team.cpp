@@ -20,16 +20,21 @@ void Team::initTeam(int** maze, Room* room)
 	minCol = room->getCenter().getX() - room->getWidth() / 2;
 	maxCol = room->getCenter().getX() + room->getWidth() / 2;
 
-	for (int i = 0; i < NUM_OF_SOLDIERS; i++)
+	for (int i = 0; i < NUM_OF_SOLDIERS + 1; i++)
 	{
 		row = minRow + (rand() % (maxRow - minRow));
 		col = minCol + (rand() % (maxCol - minCol));
-		this->soldiers[i] = new Soldier(Point(row, col));
-		maze[row][col] = static_cast<MapCell>(this->id);
+		if (i < NUM_OF_SOLDIERS)
+		{
+			this->soldiers[i] = new Soldier(Point(row, col));
+			maze[row][col] = static_cast<MapCell>(this->id);
+		}
+		else
+		{
+			this->support = new Support(Point(row, col));
+			maze[row][col] = static_cast<MapCell>(this->id + 1);
+		}
 	}
-
-	this->support = new Support(Point(row, col));
-	maze[row][col] = static_cast<MapCell>(this->id + 1);
 }
 
 void Team::play(int** maze)

@@ -19,6 +19,16 @@ void Point::setPoint(int x, int y)
 	this->setY(y);
 }
 
+double Point::euclideanDistance(const Point& target)
+{
+	return sqrt(pow(this->x - target.getX(), 2) + pow(this->y - target.getY(), 2));
+}
+
+bool Point::operator==(const Point& other)
+{
+	return this->x == other.x && this->y == other.y;
+}
+
 ostream & operator<<(ostream& os, const Point& point)
 {
 	if (typeid(os) == typeid(ofstream))

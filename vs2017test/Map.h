@@ -47,8 +47,8 @@ public:
 	void digPath(int index1, int index2);
 	void digPassages();
 	void placeTeams();
-	void createVisibilityMap();
-	void createSecurityMap();
+	//void createVisibilityMap();
+	//void createSecurityMap();
 	void showMaze();
 	void play();
 	friend ostream& operator<<(ostream& os, const Map& map);

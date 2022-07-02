@@ -1,5 +1,5 @@
 #include "AttackEnemy.h"
-#include "Soldier.h"
+//#include "Soldier.h"
 
 AttackEnemy::AttackEnemy()
 {

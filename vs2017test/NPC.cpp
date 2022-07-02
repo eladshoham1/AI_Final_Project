@@ -16,6 +16,77 @@ NPC::~NPC()
 {
 }
 
+void NPC::setTarget(Point target, MapCell targetMapCell)
+{
+	this->target = target;
+	this->targetMapCell = targetMapCell;
+}
+
+void NPC::insertToGrays(vector<Cell*>& grays, Cell* pCell)
+{
+	int index = 0;
+
+	for (Cell* ptr : grays) {
+		if (pCell->getF() < ptr->getF())
+		{
+			grays.insert(grays.begin() + index, pCell);
+			return;
+		}
+		index++;
+	}
+
+	grays.push_back(pCell);
+}
+
+void NPC::checkNeighbor(int** maze, vector<Cell*>& grays, Cell* ps, Cell* pCurrent, int row, int col)
+{
+	if (maze[row][col] == this->targetMapCell)
+	{
+		// healteh storage found
+	}
+	else // paint this neighbor GRAY
+	{
+		Cell* pCell = new Cell(row, col, pCurrent, 0, this->target.getX(), this->target.getY());
+		pCell->computeH();
+		pCell->computeF();
+		cout << "the target is: " << target.getX() << " " << target.getY() << endl;
+		insertToGrays(grays, pCell);
+	}
+}
+
+void NPC::goToTarget(int** maze)
+{
+	Cell* pCurrent;
+	int row, col;
+
+	vector<Cell*> grays;
+	Cell *ps = new Cell(this->position.getX(), this->position.getY(), nullptr, 0, this->target.getX(), this->target.getY());
+	grays.push_back(ps);
+
+	if (!grays.empty())
+	{
+		pCurrent = *(grays.begin());
+		grays.erase(grays.begin());
+
+		row = pCurrent->getRow();
+		col = pCurrent->getCol();
+		//maze[row][col] = BLACK;
+		// now scan all the white [or target] neighbors and add them (if it's not a target) to Grays
+		// check UP
+		if (maze[row + 1][col] == SPACE || maze[row + 1][col] == this->targetMapCell)
+			checkNeighbor(maze, grays, ps, pCurrent, row + 1, col);
+		// check DOWN
+		if (maze[row - 1][col] == SPACE || maze[row - 1][col] == this->targetMapCell)
+			checkNeighbor(maze, grays, ps, pCurrent, row - 1, col);
+		// check LEFT
+		if (maze[row][col - 1] == SPACE || maze[row][col - 1] == this->targetMapCell)
+			checkNeighbor(maze, grays, ps, pCurrent, row, col - 1);
+		// check RIGHT
+		if (maze[row][col + 1] == SPACE || maze[row][col + 1] == this->targetMapCell)
+			checkNeighbor(maze, grays, ps, pCurrent, row, col + 1);
+	}
+}
+
 /*void NPC::play()
 {
 	if (atHome)

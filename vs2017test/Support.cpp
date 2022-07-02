@@ -14,6 +14,7 @@ Support::~Support()
 
 void Support::play(int** maze)
 {
+	this->goToTarget(maze);
 }
 
 void Support::show()

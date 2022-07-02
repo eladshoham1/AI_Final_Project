@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Ammo.cpp" />
+    <ClCompile Include="AmmoStorage.cpp" />
     <ClCompile Include="AttackEnemy.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cell.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="GoToAmmoStorage.cpp" />
     <ClCompile Include="GoToHealthStorage.cpp" />
     <ClCompile Include="Grenade.cpp" />
+    <ClCompile Include="HealthStorage.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="NPC.cpp" />
@@ -137,11 +139,13 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RunAway.cpp" />
     <ClCompile Include="Soldier.cpp" />
+    <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Support.cpp" />
     <ClCompile Include="Team.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ammo.h" />
+    <ClInclude Include="AmmoStorage.h" />
     <ClInclude Include="AttackEnemy.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Cell.h" />
@@ -153,6 +157,7 @@
     <ClInclude Include="GoToAmmoStorage.h" />
     <ClInclude Include="GoToHealthStorage.h" />
     <ClInclude Include="Grenade.h" />
+    <ClInclude Include="HealthStorage.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Point.h" />
@@ -162,6 +167,7 @@
     <ClInclude Include="RunAway.h" />
     <ClInclude Include="Soldier.h" />
     <ClInclude Include="State.h" />
+    <ClInclude Include="Storage.h" />
     <ClInclude Include="Support.h" />
     <ClInclude Include="Team.h" />
   </ItemGroup>

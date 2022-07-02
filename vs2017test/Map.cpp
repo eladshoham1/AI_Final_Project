@@ -121,7 +121,7 @@ void Map::checkNeighbor(int row, int col, Cell* pcurrent, priority_queue <Cell, 
 	cost = this->maze[row][col] == SPACE ? cheap : expensive;
 
 	// create neighbor cell
-	Cell* pn = new Cell(row, col, pcurrent, pcurrent->getG() + cost, pcurrent->getTargetRow(), pcurrent->getTargetCol());
+	Cell* pn = new Cell(row, col, pcurrent, pcurrent->getG() + cost, pcurrent->getRow(), pcurrent->getCol());
 	// check color of theis cell
 	itrb = find(blacks.begin(), blacks.end(), *pn);
 	itrg = find(grays.begin(), grays.end(), *pn);
@@ -179,6 +179,7 @@ void Map::restorePath(Cell* ps)
 // creates path from rooms[index1] to rooms[index2] using A*
 void Map::digPath(int index1, int index2)
 {
+	//cout << "here" << endl;
 	Cell* startingCell = new Cell(this->rooms[index1]->getCenter().getY(), this->rooms[index1]->getCenter().getX(),
 		nullptr, 0, this->rooms[index2]->getCenter().getY(), this->rooms[index2]->getCenter().getX());
 
@@ -253,9 +254,9 @@ void Map::placeTeams()
 		this->teams[i]->initTeam(this->maze, this->rooms[rand() % NUM_OF_ROOMS]);
 }
 
-void Map::createVisibilityMap()
+/*void Map::createVisibilityMap()
 {
-	//this->pGrenade->simulateVisibility(maze, visibilityMap);
+	this->pGrenade->simulateVisibility(maze, visibilityMap);
 }
 
 void Map::createSecurityMap()
@@ -270,7 +271,7 @@ void Map::createSecurityMap()
 		g = new Grenade(Point(rand() % MSZ, rand() % MSZ));
 		g->simulateExplosion(this->maze, this->securityMap, damage);
 	}
-}
+}*/
 
 void Map::showMaze()
 {
