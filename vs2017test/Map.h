@@ -14,8 +14,6 @@ using namespace std;
 
 class Map
 {
-public:
-	static constexpr int MSZ = 100;
 private:
 	static constexpr int NUM_OF_ROOMS = 8;
 	static constexpr int NUM_OF_TEAMS = 2;
@@ -48,7 +46,7 @@ public:
 	void digPassages();
 	void placeTeams();
 	//void createVisibilityMap();
-	//void createSecurityMap();
+	void createSecurityMap();
 	void showMaze();
 	void play();
 	friend ostream& operator<<(ostream& os, const Map& map);

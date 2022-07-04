@@ -15,7 +15,7 @@ public:
 	Support(Point position);
 	~Support();
 
-	void play(int** maze);
+	void play(int** maze, double** securityMap);
 	void show();
 	void addSoldierWithLowHP(const Soldier& soldier);
 	void addSoldierWithLowAmmo(const Soldier& soldier);

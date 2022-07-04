@@ -21,6 +21,6 @@ public:
 	~Team();
 
 	void initTeam(int** maze, Room* room);
-	void play(int** maze);
+	void play(int** maze, double** securityMap);
 	void show();
 };

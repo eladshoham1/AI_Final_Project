@@ -12,9 +12,10 @@ Support::~Support()
 {
 }
 
-void Support::play(int** maze)
+void Support::play(int** maze, double** securityMap)
 {
-	this->goToTarget(maze);
+	this->setTarget(Point(position.getX() + 5, position.getY() + 4), WALL);
+	this->goToTarget(maze, securityMap);
 }
 
 void Support::show()

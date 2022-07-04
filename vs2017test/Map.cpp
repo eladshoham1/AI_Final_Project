@@ -257,7 +257,7 @@ void Map::placeTeams()
 /*void Map::createVisibilityMap()
 {
 	this->pGrenade->simulateVisibility(maze, visibilityMap);
-}
+}*/
 
 void Map::createSecurityMap()
 {
@@ -271,7 +271,7 @@ void Map::createSecurityMap()
 		g = new Grenade(Point(rand() % MSZ, rand() % MSZ));
 		g->simulateExplosion(this->maze, this->securityMap, damage);
 	}
-}*/
+}
 
 void Map::showMaze()
 {
@@ -337,15 +337,15 @@ void Map::showMaze()
 void Map::play()
 {
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
-		teams[i]->play(this->maze);
+		teams[i]->play(this->maze, this->securityMap);
 }
 
 ostream& operator<<(ostream& os, const Map& map)
 {
 	int** mapMaze = map.getMaze();
-	for (int i = 0; i < Map::MSZ; i++)
+	for (int i = 0; i < MSZ; i++)
 	{
-		for (int j = 0; j < Map::MSZ; j++)
+		for (int j = 0; j < MSZ; j++)
 			os << mapMaze[i][j] << " ";
 	}
 	for (int i = 0; i < Map::NUM_OF_ROOMS; i++)
@@ -360,9 +360,9 @@ istream& operator>>(istream& in, Map& map)
 	{
 		ifstream& inFile = dynamic_cast<ifstream&>(in);
 		int** mapMaze = map.getMaze();
-		for (int i = 0; i < Map::MSZ; i++)
+		for (int i = 0; i < MSZ; i++)
 		{
-			for (int j = 0; j < Map::MSZ; j++)
+			for (int j = 0; j < MSZ; j++)
 				inFile >> mapMaze[i][j];
 		}
 		for (int i = 0; i < Map::NUM_OF_ROOMS; i++)

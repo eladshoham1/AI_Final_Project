@@ -21,6 +21,7 @@ public:
 	double getF() { return this->f; }
 	double getG() { return this->g; }
 	void setG(double g) { this->g = g; }
+	void setF(double f) { this->f = f; }
 	void computeH();
 	void computeF() { this->f = this->g + this->h; }
 	bool operator==(const Cell& other) { return this->row == other.row && this->col == other.col; }

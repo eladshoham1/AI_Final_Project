@@ -12,7 +12,7 @@ void init()
 	glClearColor(1, 1, 1, 0);// color of window background
 
 	// set the main axes
-	glOrtho(0, Map::MSZ, 0, Map::MSZ, -1, 1);
+	glOrtho(0, MSZ, 0, MSZ, -1, 1);
 
 	srand((unsigned int)time(NULL));
 }

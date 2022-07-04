@@ -18,11 +18,11 @@ Soldier::~Soldier()
 {
 }
 
-void Soldier::play(int** maze)
+void Soldier::play(int** maze, double** securityMap)
 {
 	if (dynamic_cast<AttackEnemy*>(this->pCurrentState))
 	{
-		shoot(maze);
+		//shoot(maze);
 		//throwGrenade(maze);
 	}
 }

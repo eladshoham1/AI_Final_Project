@@ -20,7 +20,7 @@ public:
 
 	int getNumOfBullets() { return this->numOfBullets; }
 	int getNumOfGrenades() { return this->numOfGrenades; }
-	void play(int** maze);
+	void play(int** maze, double** securityMap);
 	void show();
 	void shoot(int** maze);
 	void throwGrenade(int** maze);

@@ -1,10 +1,14 @@
 #pragma once
 #include <vector>
+#include <queue>
 #include "Definitions.h"
 #include "Point.h"
 #include "Cell.h"
+#include "CompareCells.h"
 #include "State.h"
 #include "AttackEnemy.h"
+
+using namespace std;
 
 class NPC
 {
@@ -21,7 +25,7 @@ protected:
 	double hp;
 
 	void insertToGrays(vector<Cell*>& grays, Cell* pCell);
-	void checkNeighbor(int** maze, vector<Cell*>& grays, Cell* ps, Cell* pCurrent, int row, int col);
+	void checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col);
 
 public:
 	NPC();
@@ -39,7 +43,7 @@ public:
 	double getHP() const { return this->hp; }
 	bool getIsMoving() const { return this->isMoving; }
 	bool isTarget() { return this->position == this->target; }
-	void goToTarget(int** maze);
-	virtual void play(int** maze) = 0;
+	void goToTarget(int** maze, double** securityMap);
+	virtual void play(int** maze, double** securityMap) = 0;
 	virtual void show() = 0;
 };
