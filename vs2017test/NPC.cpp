@@ -4,9 +4,9 @@ NPC::NPC()
 {
 }
 
-NPC::NPC(Point position)
+NPC::NPC(const Point& position)
 {
-	this->position = position;
+	this->setPosition(position);
 	this->pCurrentState = nullptr;
 	this->isMoving = false;
 	this->hp = MAX_HP;
@@ -70,7 +70,7 @@ void NPC::checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, 
 		it_black = find(blacks.begin(), blacks.end(), pn);
 		if (it_black != blacks.end()) // it was found i.e. it is black
 			return;
-		cout << "row: " << row << " col: " << col << " targetRow: " << this->target.getX() << " targetCol: " << this->target.getY() << endl;
+		//cout << "row: " << row << " col: " << col << " targetRow: " << this->target.getX() << " targetCol: " << this->target.getY() << endl;
 		// white
 		it_gray = find(grays.begin(), grays.end(), pn);
 		if (it_gray == grays.end()) // it wasn't found => it is white
@@ -139,7 +139,39 @@ void NPC::goToTarget(int** maze, double** securityMap)
 		// If current is actually a target then we stop A*	
 		if (pCurrent->getRow() == this->target.getX() && pCurrent->getCol() == this->target.getY()) // then it is target	
 		{ //in this case there cannot be a better path to target!!!		
-			return;
+			if (pCurrent->getParent()->getParent() == nullptr) // then next step is target
+			{
+				if (maze[pCurrent->getRow()][pCurrent->getCol()] == SPACE)
+				{
+					cout << "1111" << endl;
+					maze[pCurrent->getRow()][pCurrent->getCol()] = SUPPORT_TEAM_OME;
+					this->setPosition(Point(pCurrent->getRow(), pCurrent->getCol()));
+					delete pCurrent->getParent();
+					delete pCurrent;
+				}
+				else
+					return; // dont want to step over target, as it isnt space
+			}
+			else
+			{
+				Cell* memory;
+				while (pCurrent->getParent() != nullptr)
+				{
+
+					if (pCurrent->getParent()->getParent() == nullptr) // next step
+					{
+						cout << "2222" << endl;
+						maze[pCurrent->getRow()][pCurrent->getCol()] = SUPPORT_TEAM_OME;
+						this->setPosition(Point(pCurrent->getRow(), pCurrent->getCol()));
+						delete pCurrent->getParent();
+						delete pCurrent;
+						return;
+					}
+					memory = pCurrent;
+					pCurrent = pCurrent->getParent();
+					delete memory;
+				}
+			}
 		}
 
 		// paint current black

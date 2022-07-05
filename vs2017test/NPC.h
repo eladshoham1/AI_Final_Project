@@ -29,10 +29,11 @@ protected:
 
 public:
 	NPC();
-	NPC(Point position);
+	NPC(const Point& position);
 	virtual ~NPC();
 
 	Point getPosition() { return this->position; }
+	void setPosition(const Point& position) { this->position = position; }
 	Point getTarget() { return this->target; }
 	MapCell getTargetMapCell() { return this->targetMapCell; }
 	void setTarget(Point target, MapCell targetMapCell);
