@@ -22,6 +22,7 @@ public:
 	void setPoint(int x, int y);
 	double euclideanDistance(const Point& target);
 	bool operator==(const Point& other);
+	bool operator!=(const Point& other);
 	friend ostream & operator<<(ostream& os, const Point& point);
 	friend istream & operator>>(istream& in, Point& point);
 };

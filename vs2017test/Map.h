@@ -4,10 +4,11 @@
 #include <queue>
 #include "glut.h"
 #include "Definitions.h"
-#include "Team.h"
-#include "Room.h"
 #include "Cell.h"
 #include "CompareCells.h"
+#include "Room.h"
+#include "Team.h"
+#include "Support.h"
 #include "Grenade.h"
 
 using namespace std;
@@ -47,6 +48,8 @@ public:
 	void placeTeams();
 	//void createVisibilityMap();
 	void createSecurityMap();
+	void findClosestHealthStorage(Support* support);
+	void findClosestAmmoStorage(Support* support);
 	void showMaze();
 	void play();
 	friend ostream& operator<<(ostream& os, const Map& map);

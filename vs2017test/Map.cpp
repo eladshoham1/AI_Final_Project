@@ -273,6 +273,52 @@ void Map::createSecurityMap()
 	}
 }
 
+void Map::findClosestHealthStorage(Support* support)
+{
+	HealthStorage* closestHealthStorage = nullptr;
+	for (int i = 0; i < NUM_OF_ROOMS; i++)
+	{
+		for (int j = 0; j < Room::NUM_OF_HEALTH_STORAGE; j++)
+		{
+			if (closestHealthStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getHealthStorages()[j]->getPosition()) >
+				support->getPosition().euclideanDistance(closestHealthStorage->getPosition()))
+			{
+				if (!this->rooms[i]->getHealthStorages()[j]->isEmpty())
+				{
+					closestHealthStorage = this->rooms[i]->getHealthStorages()[j];
+				}
+			}
+		}
+	}
+	if (closestHealthStorage == nullptr || support->getClosestHealthStorage()->getPosition() != closestHealthStorage->getPosition())
+	{
+		support->setClosestHealthStorage(closestHealthStorage);
+	}
+}
+
+void Map::findClosestAmmoStorage(Support* support)
+{
+	AmmoStorage* closestAmmoStorage = nullptr;
+	for (int i = 0; i < NUM_OF_ROOMS; i++)
+	{
+		for (int j = 0; j < Room::NUM_OF_HEALTH_STORAGE; j++)
+		{
+			if (closestAmmoStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getAmmoStorages()[j]->getPosition()) >
+				support->getPosition().euclideanDistance(closestAmmoStorage->getPosition()))
+			{
+				if (!this->rooms[i]->getAmmoStorages()[j]->isEmpty())
+				{
+					closestAmmoStorage = this->rooms[i]->getAmmoStorages()[j];
+				}
+			}
+		}
+	}
+	if (closestAmmoStorage == nullptr || support->getClosestAmmoStorage()->getPosition() != closestAmmoStorage->getPosition())
+	{
+		support->setClosestAmmoStorage(closestAmmoStorage);
+	}
+}
+
 void Map::showMaze()
 {
 	int i, j;

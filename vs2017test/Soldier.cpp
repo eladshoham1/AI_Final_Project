@@ -4,7 +4,7 @@ Soldier::Soldier()
 {
 }
 
-Soldier::Soldier(Point position) : NPC(position)
+Soldier::Soldier(const Point& position) : NPC(position)
 {
 	this->pCurrentState = new AttackEnemy();
 	this->pCurrentState->onEnter(this);
@@ -20,10 +20,13 @@ Soldier::~Soldier()
 
 void Soldier::play(int** maze, double** securityMap)
 {
-	if (dynamic_cast<AttackEnemy*>(this->pCurrentState))
+	if (!this->isDead())
 	{
-		//shoot(maze);
-		//throwGrenade(maze);
+		if (dynamic_cast<AttackEnemy*>(this->pCurrentState))
+		{
+			//shoot(maze);
+			//throwGrenade(maze);
+		}
 	}
 }
 

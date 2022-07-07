@@ -29,6 +29,11 @@ bool Point::operator==(const Point& other)
 	return this->x == other.x && this->y == other.y;
 }
 
+bool Point::operator!=(const Point& other)
+{
+	return !(*this == other);
+}
+
 ostream & operator<<(ostream& os, const Point& point)
 {
 	if (typeid(os) == typeid(ofstream))

@@ -116,6 +116,18 @@ void NPC::checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, 
 	}
 }
 
+void NPC::hit(int damage)
+{
+	if (damage > this->hp)
+	{
+		this->hp -= damage;
+	}
+	else
+	{
+		this->hp = 0;
+	}
+}
+
 void NPC::goToTarget(int** maze, double** securityMap)
 {
 	int row, col;
@@ -130,20 +142,21 @@ void NPC::goToTarget(int** maze, double** securityMap)
 	pq.push(*pstart);
 	delete pstart;
 	vector<Cell>::iterator it_gray;
-
 	while (!pq.empty())
 	{
 		pCurrent = new Cell(pq.top());
 		pq.pop();
 
 		// If current is actually a target then we stop A*	
+		
 		if (pCurrent->getRow() == this->target.getX() && pCurrent->getCol() == this->target.getY()) // then it is target	
 		{ //in this case there cannot be a better path to target!!!		
+			cout << pCurrent->getRow() << " , " << this->target.getX() << " -> " << pCurrent->getCol() << " , " << this->target.getY() << endl;
 			if (pCurrent->getParent()->getParent() == nullptr) // then next step is target
 			{
 				if (maze[pCurrent->getRow()][pCurrent->getCol()] == SPACE)
 				{
-					cout << "1111" << endl;
+					maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
 					maze[pCurrent->getRow()][pCurrent->getCol()] = SUPPORT_TEAM_OME;
 					this->setPosition(Point(pCurrent->getRow(), pCurrent->getCol()));
 					delete pCurrent->getParent();
@@ -160,7 +173,7 @@ void NPC::goToTarget(int** maze, double** securityMap)
 
 					if (pCurrent->getParent()->getParent() == nullptr) // next step
 					{
-						cout << "2222" << endl;
+						maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
 						maze[pCurrent->getRow()][pCurrent->getCol()] = SUPPORT_TEAM_OME;
 						this->setPosition(Point(pCurrent->getRow(), pCurrent->getCol()));
 						delete pCurrent->getParent();
@@ -184,16 +197,13 @@ void NPC::goToTarget(int** maze, double** securityMap)
 		col = pCurrent->getCol();
 		// try to go UP (row -1)
 		if (row > 0) // we can go UP
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, this->position.getX() - 1, this->position.getY());
-
+			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row - 1, col);
 		if (row < MSZ - 1) // DOWN
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, this->position.getX() + 1, this->position.getY());
-
+			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row + 1, col);
 		if (col < MSZ - 1) // RIGHT
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, this->position.getX(), this->position.getY() + 1);
-
+			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row, col + 1);
 		if (col > 0) //LEFT
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, this->position.getX(), this->position.getY() - 1);
+			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row, col - 1);
 	}
 }
 

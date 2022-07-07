@@ -4,12 +4,11 @@
 class Storage
 {
 protected:
-	static constexpr int INITIAL_AMOUNT = 1000;
 	Point position;
 	int amount;
 
 public:
-	Storage(const Point& position);
+	Storage(const Point& position, int amount);
 	virtual ~Storage();
 
 	Point getPosition() const { return this->position; }

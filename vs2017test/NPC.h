@@ -42,8 +42,11 @@ public:
 	State* getInterruptedState() const { return this->pInterruptedState; }
 	void setInterruptedState(State* ps) { this->pInterruptedState = ps; }
 	double getHP() const { return this->hp; }
+	int hpLack() const { return MAX_HP - this->hp; }
 	bool getIsMoving() const { return this->isMoving; }
-	bool isTarget() { return this->position == this->target; }
+	bool isAtTarget() { return this->position == this->target; }
+	bool isDead() { return this->hp == 0; }
+	void hit(int damage);
 	void goToTarget(int** maze, double** securityMap);
 	virtual void play(int** maze, double** securityMap) = 0;
 	virtual void show() = 0;

@@ -10,11 +10,12 @@ using namespace std;
 
 class Room
 {
+public:
+	static constexpr int NUM_OF_AMMO_STORAGE = 2;
+	static constexpr int NUM_OF_HEALTH_STORAGE = 2;
 private:
 	static constexpr float OBSTACLES_PRECENTAGE = 0.05f;
 	static constexpr int MIN_OBSTACLES = 5;
-	static constexpr int NUM_OF_AMMO_STORAGE = 2;
-	static constexpr int NUM_OF_HEALTH_STORAGE = 2;
 	int width, height;
 	Point center;
 	AmmoStorage *ammoStorages[NUM_OF_AMMO_STORAGE];
@@ -34,6 +35,8 @@ public:
 	void setHeight(int h) { this->height = h; }
 	Point getCenter() { return this->center; }
 	void setCenter(Point center) { this->center = center; }
+	AmmoStorage** getAmmoStorages() { return this->ammoStorages; }
+	HealthStorage** getHealthStorages() { return this->healthStorages; }
 	void initRoom(int** maze);
 	friend ostream& operator<<(ostream& os, const Room& room);
 	friend istream& operator>>(istream& in, Room& room);

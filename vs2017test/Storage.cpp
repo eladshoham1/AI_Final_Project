@@ -1,9 +1,9 @@
 #include "Storage.h"
 
-Storage::Storage(const Point& position)
+Storage::Storage(const Point& position, int amount)
 {
 	this->position = position;
-	this->amount = INITIAL_AMOUNT;
+	this->amount = amount;
 }
 
 Storage::~Storage()
