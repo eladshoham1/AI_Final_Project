@@ -5,6 +5,8 @@ Map::Map()
 	initMap();
 	setupRooms();
 	placeTeams();
+	//createVisibilityMap();
+	//createSecurityMap();
 }
 
 Map::Map(const char* fileName)
@@ -24,6 +26,8 @@ Map::Map(const char* fileName)
 		saveMapToFile(fileName);
 	}
 	placeTeams();
+	//createVisibilityMap();
+	//createSecurityMap();
 }
 
 Map::~Map()
@@ -60,6 +64,8 @@ void Map::initMap()
 
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
 		this->teams[i] = new Team((int)SOLDIER_TEAM_ONE + i * 2);
+
+	this->teamTurn = 0;
 }
 
 // checks for overlapping with rooms of lower indices
@@ -179,7 +185,6 @@ void Map::restorePath(Cell* ps)
 // creates path from rooms[index1] to rooms[index2] using A*
 void Map::digPath(int index1, int index2)
 {
-	//cout << "here" << endl;
 	Cell* startingCell = new Cell(this->rooms[index1]->getCenter().getY(), this->rooms[index1]->getCenter().getX(),
 		nullptr, 0, this->rooms[index2]->getCenter().getY(), this->rooms[index2]->getCenter().getX());
 
@@ -254,10 +259,10 @@ void Map::placeTeams()
 		this->teams[i]->initTeam(this->maze, this->rooms[rand() % NUM_OF_ROOMS]);
 }
 
-/*void Map::createVisibilityMap()
+void Map::createVisibilityMap()
 {
-	this->pGrenade->simulateVisibility(maze, visibilityMap);
-}*/
+	//this->pGrenade->simulateVisibility(this->maze, this->visibilityMap);
+}
 
 void Map::createSecurityMap()
 {
@@ -273,6 +278,29 @@ void Map::createSecurityMap()
 	}
 }
 
+void Map::findClosestEnemy(NPC* npc)
+{
+	NPC* closestEnemy = nullptr;
+	for (int i = 0; i < NUM_OF_TEAMS; i++)
+	{
+		if (npc->getTeamId() != this->teams[i]->getId())
+		{
+			for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
+			{
+				if (!this->teams[i]->getSoldiers()[j]->isDead())
+				{
+					if (closestEnemy == nullptr || npc->getPosition().euclideanDistance(this->teams[i]->getSoldiers()[j]->getPosition()) <
+						npc->getPosition().euclideanDistance(closestEnemy->getPosition()))
+					{
+						closestEnemy = this->teams[i]->getSoldiers()[j];
+					}
+				}
+			}
+		}
+	}
+	npc->setClosestEnemy(closestEnemy);
+}
+
 void Map::findClosestHealthStorage(Support* support)
 {
 	HealthStorage* closestHealthStorage = nullptr;
@@ -280,7 +308,7 @@ void Map::findClosestHealthStorage(Support* support)
 	{
 		for (int j = 0; j < Room::NUM_OF_HEALTH_STORAGE; j++)
 		{
-			if (closestHealthStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getHealthStorages()[j]->getPosition()) >
+			if (closestHealthStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getHealthStorages()[j]->getPosition()) <
 				support->getPosition().euclideanDistance(closestHealthStorage->getPosition()))
 			{
 				if (!this->rooms[i]->getHealthStorages()[j]->isEmpty())
@@ -290,10 +318,7 @@ void Map::findClosestHealthStorage(Support* support)
 			}
 		}
 	}
-	if (closestHealthStorage == nullptr || support->getClosestHealthStorage()->getPosition() != closestHealthStorage->getPosition())
-	{
-		support->setClosestHealthStorage(closestHealthStorage);
-	}
+	support->setClosestHealthStorage(closestHealthStorage);
 }
 
 void Map::findClosestAmmoStorage(Support* support)
@@ -303,7 +328,7 @@ void Map::findClosestAmmoStorage(Support* support)
 	{
 		for (int j = 0; j < Room::NUM_OF_HEALTH_STORAGE; j++)
 		{
-			if (closestAmmoStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getAmmoStorages()[j]->getPosition()) >
+			if (closestAmmoStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getAmmoStorages()[j]->getPosition()) <
 				support->getPosition().euclideanDistance(closestAmmoStorage->getPosition()))
 			{
 				if (!this->rooms[i]->getAmmoStorages()[j]->isEmpty())
@@ -313,10 +338,7 @@ void Map::findClosestAmmoStorage(Support* support)
 			}
 		}
 	}
-	if (closestAmmoStorage == nullptr || support->getClosestAmmoStorage()->getPosition() != closestAmmoStorage->getPosition())
-	{
-		support->setClosestAmmoStorage(closestAmmoStorage);
-	}
+	support->setClosestAmmoStorage(closestAmmoStorage);
 }
 
 void Map::showMaze()
@@ -370,20 +392,49 @@ void Map::showMaze()
 			glEnd();
 		}// for
 	}
-
+	
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
 		this->teams[i]->show();
-
-	/*if (this->pBullet != nullptr)
-		this->pBullet->show();
-	if (this->pGrenade != nullptr)
-		this->pGrenade->show();*/
 }
 
-void Map::play()
+bool Map::play()
 {
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
-		teams[i]->play(this->maze, this->securityMap);
+	{
+		if (!this->teams[i]->theyAllDeads())
+		{
+			if (i == this->teamTurn)
+			{
+				this->teams[i]->play(this->maze, this->securityMap);
+				for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
+				{
+					this->findClosestEnemy(this->teams[i]->getSoldiers()[j]);
+				}
+				this->findClosestEnemy(this->teams[i]->getSupport());
+				this->findClosestHealthStorage(this->teams[i]->getSupport());
+				this->findClosestAmmoStorage(this->teams[i]->getSupport());
+				this->nextTurn();
+			}
+		}
+		else
+		{
+			cout << "Team " << (i + 1) << " won" << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+void Map::nextTurn()
+{
+	if (this->teamTurn < NUM_OF_TEAMS - 1)
+	{
+		this->teamTurn++;
+	}
+	else
+	{
+		this->teamTurn = 0;
+	}
 }
 
 ostream& operator<<(ostream& os, const Map& map)
@@ -412,7 +463,10 @@ istream& operator>>(istream& in, Map& map)
 				inFile >> mapMaze[i][j];
 		}
 		for (int i = 0; i < Map::NUM_OF_ROOMS; i++)
+		{
 			map.rooms[i] = new Room(inFile);
+			map.rooms[i]->initRoom(map.getMaze());
+		}
 	}
 	return in;
 }

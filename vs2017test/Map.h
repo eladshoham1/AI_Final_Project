@@ -21,10 +21,10 @@ private:
 	int** maze;
 	double** securityMap;
 	double** visibilityMap;
-	Team* teams[NUM_OF_TEAMS];
 	Room* rooms[NUM_OF_ROOMS];
-	//Bullet* pBullet;
-	//Grenade* pGrenade;
+	Team* teams[NUM_OF_TEAMS];
+	Grenade* pGrenade;
+	int teamTurn;
 
 	void initMap();
 
@@ -36,8 +36,6 @@ public:
 	double** getSecurityMap() const { return this->securityMap; }
 	double** getVisibilityMap() const { return this->visibilityMap; }
 	Room** getRooms() { return this->rooms; }
-	//Bullet* getPBullet() const { return this->pBullet; }
-	//Grenade* getPGrenade() const { return this->pGrenade; }
 	bool hasOverlap(int width, int height, int x, int y, int index);
 	void setupRooms();
 	void saveMapToFile(const char* fileName);
@@ -46,12 +44,14 @@ public:
 	void digPath(int index1, int index2);
 	void digPassages();
 	void placeTeams();
-	//void createVisibilityMap();
+	void createVisibilityMap();
 	void createSecurityMap();
+	void findClosestEnemy(NPC* npc);
 	void findClosestHealthStorage(Support* support);
 	void findClosestAmmoStorage(Support* support);
 	void showMaze();
-	void play();
+	bool play();
+	void nextTurn();
 	friend ostream& operator<<(ostream& os, const Map& map);
 	friend istream& operator>>(istream& in, Map& map);
 };

@@ -26,28 +26,57 @@ void Team::initTeam(int** maze, Room* room)
 		col = minCol + (rand() % (maxCol - minCol));
 		if (i < NUM_OF_SOLDIERS)
 		{
-			this->soldiers[i] = new Soldier(Point(row, col));
+			this->soldiers[i] = new Soldier(Point(row, col), this->id);
 			maze[row][col] = static_cast<MapCell>(this->id);
 		}
 		else
 		{
-			this->support = new Support(Point(row, col));
+			this->support = new Support(Point(row, col), this->soldiers, this->id);
 			maze[row][col] = static_cast<MapCell>(this->id + 1);
 		}
 	}
 }
 
-void Team::play(int** maze, double** securityMap)
+bool Team::theyAllDeads()
 {
 	for (int i = 0; i < NUM_OF_SOLDIERS; i++)
 	{
-		this->soldiers[i]->play(maze, securityMap);
-		if (this->soldiers[i]->getHP() < NPC::MAX_HP / 2)
-			this->support->addSoldierWithLowHP(*this->soldiers[i]);
-		if (this->soldiers[i]->getNumOfBullets() < 1 || this->soldiers[i]->getNumOfGrenades() < 1)
-			this->support->addSoldierWithLowAmmo(*this->soldiers[i]);
+		if (!this->soldiers[i]->isDead())
+		{
+			return false;
+		}
 	}
-	this->support->play(maze, securityMap);
+
+	return this->support->isDead();
+}
+
+void Team::play(int** maze, double** securityMap)
+{
+	int i;
+	for (i = 0; i < NUM_OF_SOLDIERS; i++)
+	{
+		if (i == this->npcTurn)
+		{
+			this->soldiers[i]->play(maze, securityMap);
+		}
+	}
+	if (i == this->npcTurn)
+	{
+		this->support->play(maze, securityMap);
+	}
+	this->nextTurn();
+}
+
+void Team::nextTurn()
+{
+	if (this->npcTurn < NUM_OF_SOLDIERS)
+	{
+		this->npcTurn++;
+	}
+	else
+	{
+		this->npcTurn = 0;
+	}
 }
 
 void Team::show()

@@ -29,9 +29,13 @@ void Room::addObjects(int** maze, int numOfObjects, MapCell object)
 		row = minRow + (rand() % (maxRow - minRow));
 		col = minCol + (rand() % (maxCol - minCol));
 		if (object == AMMO)
-			ammoStorages[i] = new AmmoStorage(Point(row, col));
+		{
+			this->ammoStorages[i] = new AmmoStorage(Point(row, col));
+		}
 		else if (object == HEALTH)
-			healthStorages[i] = new HealthStorage(Point(row, col));
+		{
+			this->healthStorages[i] = new HealthStorage(Point(row, col));
+		}
 		maze[row][col] = object;
 	}
 }

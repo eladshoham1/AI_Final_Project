@@ -129,6 +129,7 @@
     <ClCompile Include="GoToAmmoStorage.cpp" />
     <ClCompile Include="GoToHealthStorage.cpp" />
     <ClCompile Include="GoToSafePlace.cpp" />
+    <ClCompile Include="GoToSoldier.cpp" />
     <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="HealthStorage.cpp" />
     <ClCompile Include="main.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="GoToAmmoStorage.h" />
     <ClInclude Include="GoToHealthStorage.h" />
     <ClInclude Include="GoToSafePlace.h" />
+    <ClInclude Include="GoToSoldier.h" />
     <ClInclude Include="Grenade.h" />
     <ClInclude Include="HealthStorage.h" />
     <ClInclude Include="Map.h" />

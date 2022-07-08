@@ -22,10 +22,12 @@ void GameManager::idle()
 	switch (this->gameState)
 	{
 	case state::START_GAME:
-		play();
+		this->play();
 		break;
 	case state::STOP_GAME:
-		stop();
+		break;
+	case state::GAME_OVER:
+		this->gameOver();
 		break;
 	default:
 		cout << "Error, while tring to change the state of the game" << endl;
@@ -34,12 +36,15 @@ void GameManager::idle()
 
 void GameManager::play()
 {
-	this->map->play();
+	if (!this->map->play())
+	{
+		this->setGameState(GAME_OVER);
+	}
 }
 
-void GameManager::stop()
+void GameManager::gameOver()
 {
-	//cout << "stop" << endl;
+	cout << "Game Over" << endl;
 }
 
 void GameManager::show()

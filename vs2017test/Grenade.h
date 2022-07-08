@@ -4,9 +4,10 @@
 
 class Grenade : public Ammo
 {
+public:
+	static constexpr int NUM_OF_BULLETS = 30;
 
 private:
-	static constexpr int NUM_OF_BULLETS = 30;
 	Bullet* bullets[NUM_OF_BULLETS];
 	bool isExploded;
 

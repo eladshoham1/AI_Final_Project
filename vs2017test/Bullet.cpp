@@ -37,7 +37,7 @@ void Bullet::move(int** maze)
 
 		this->position.setX((int)(this->position.getX() + dx * SPEED));
 		this->position.setY((int)(this->position.getX() + dy * SPEED));
-		if (maze[this->position.getY()][this->position.getX()] == WALL)
+		if (maze[this->position.getY()][this->position.getX()] != SPACE)
 			isMoving = false;
 	}
 }
@@ -55,7 +55,7 @@ void Bullet::simulateMotion(int** maze, double** securityMap, double damage)
 
 		securityMap[this->position.getY()][this->position.getX()] += damage; // drawing in map
 
-		if (maze[this->position.getY()][this->position.getX()] == WALL)
+		if (maze[this->position.getY()][this->position.getX()] != SPACE)
 			isMoving = false;
 	}
 }
@@ -73,7 +73,7 @@ void Bullet::simulateVisibility(int** maze, double** visibilityMap)
 
 		visibilityMap[this->position.getY()][this->position.getX()] = 1; // drawing in map
 
-		if (maze[this->position.getY()][this->position.getX()] == WALL)
+		if (maze[this->position.getY()][this->position.getX()] != SPACE)
 			isMoving = false;
 	}
 }

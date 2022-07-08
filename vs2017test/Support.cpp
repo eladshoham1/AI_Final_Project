@@ -1,15 +1,19 @@
 #include "Support.h"
+#include "Team.h"
 
 Support::Support()
 {
 }
 
-Support::Support(const Point& position) : NPC(position)
+Support::Support(const Point& position, Soldier** soldiers, int teamId) : NPC(position, teamId)
 {
+	this->soldiers = soldiers;
 	this->closestHealthStorage = nullptr;
 	this->closestAmmoStorage = nullptr;
 	this->health = 0;
 	this->ammo = 0;
+	this->pCurrentState = new GoToHealthStorage();
+	this->pCurrentState->onEnter(this);
 }
 
 Support::~Support()
@@ -22,58 +26,49 @@ Support::~Support()
 	}
 }
 
-void Support::play(int** maze, double** securityMap)
-{
-	if (!this->isDead())
-	{
-		this->goToTarget(maze, securityMap);
-	}
-}
-
 void Support::show()
 {
 }
 
 void Support::setClosestHealthStorage(HealthStorage* closestHealthStorage)
 {
-	if (this->closestHealthStorage != nullptr) {
-		delete this->closestHealthStorage;
-	}
 	this->closestHealthStorage = closestHealthStorage;
 }
 
 void Support::setClosestAmmoStorage(AmmoStorage* closestAmmoStorage)
 {
-	if (this->closestAmmoStorage != nullptr) {
-		delete this->closestAmmoStorage;
-	}
 	this->closestAmmoStorage = closestAmmoStorage;
 }
 
-void Support::addSoldierWithLowHP(const Soldier& soldier)
+void Support::bringHealthToSoldiers()
 {
-	this->waitingForHP.push_back(soldier);
-}
-
-void Support::addSoldierWithLowAmmo(const Soldier& soldier)
-{
-	this->waitingForAmmo.push_back(soldier);
+	for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
+	{
+		if (this->soldiers[i]->hpLack() > 0)
+		{
+			this->setTarget(this->soldiers[i]->getPosition(), static_cast<MapCell>(this->teamId));
+			return;
+		}
+	}
 }
 
 void Support::takeHealthFromStorage()
 {
-	int amount = 0;
+	double amount = 0.0;
 	if (this->isAtTarget())
 	{
-		for (const Soldier& ptr : this->waitingForHP)
+		for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
 		{
-			amount += ptr.hpLack();
+			amount += this->soldiers[i]->hpLack();
 		}
-		this->health += this->closestHealthStorage->supply(amount);
+		this->health += this->closestHealthStorage->supply((int)ceil(amount));
 	}
 }
 
 void Support::goToClosestHealthStorage()
 {
-	this->setTarget(this->closestHealthStorage->getPosition(), HEALTH);
+	if (this->closestHealthStorage != nullptr)
+	{
+		this->setTarget(this->closestHealthStorage->getPosition(), HEALTH);
+	}
 }

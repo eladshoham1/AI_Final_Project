@@ -14,21 +14,25 @@ void GoToHealthStorage::transform(NPC* pn)
 	Support *support = dynamic_cast<Support*>(pn);
 	if (support)
 	{
-		if (support->isAtTarget())
+		if (!support->isAtTarget())
+		{
+			support->goToClosestHealthStorage();
+		}
+		else
 		{
 			support->takeHealthFromStorage();
-			support->setCurrentState(new GoToSoldier());
+			pn->setCurrentState(new GoToSoldier());
 		}
 	}
 }
 
 void GoToHealthStorage::onEnter(NPC* pn)
 {
-	Support *support = dynamic_cast<Support*>(pn);
+	/*Support *support = dynamic_cast<Support*>(pn);
 	if (support)
 	{
-		support->goToClosestHealthStorage();
-	}
+		support->setSearchForClose
+	}*/
 }
 
 void GoToHealthStorage::onExit(NPC* pn)

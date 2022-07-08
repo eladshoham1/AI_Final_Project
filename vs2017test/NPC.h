@@ -13,7 +13,7 @@ using namespace std;
 class NPC
 {
 public:
-	static constexpr int MAX_HP = 100;
+	static constexpr double MAX_HP = 100.0;
 
 protected:
 	Point position;
@@ -23,13 +23,15 @@ protected:
 	State* pInterruptedState;
 	bool isMoving;
 	double hp;
+	int teamId;
+	NPC* closestEnemy;
 
 	void insertToGrays(vector<Cell*>& grays, Cell* pCell);
 	void checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col);
 
 public:
 	NPC();
-	NPC(const Point& position);
+	NPC(const Point& position, int teamId);
 	virtual ~NPC();
 
 	Point getPosition() { return this->position; }
@@ -42,12 +44,16 @@ public:
 	State* getInterruptedState() const { return this->pInterruptedState; }
 	void setInterruptedState(State* ps) { this->pInterruptedState = ps; }
 	double getHP() const { return this->hp; }
-	int hpLack() const { return MAX_HP - this->hp; }
+	int getTeamId() { return this->teamId; }
+	NPC* getClosestEnemy() const { return this->closestEnemy; }
+	void setClosestEnemy(NPC* closestEnemy) { this->closestEnemy = closestEnemy; }
+	double hpLack() const { return MAX_HP - this->hp; }
 	bool getIsMoving() const { return this->isMoving; }
-	bool isAtTarget() { return this->position == this->target; }
+	bool isInDanger() { return this->hp < MAX_HP / 2.0; }
 	bool isDead() { return this->hp == 0; }
-	void hit(int damage);
+	bool isAtTarget();
+	void hit(double damage);
 	void goToTarget(int** maze, double** securityMap);
-	virtual void play(int** maze, double** securityMap) = 0;
+	void play(int** maze, double** securityMap);
 	virtual void show() = 0;
 };

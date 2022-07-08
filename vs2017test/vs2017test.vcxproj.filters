@@ -90,6 +90,9 @@
     <ClCompile Include="GoToSafePlace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GoToSoldier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glut.h">
@@ -171,6 +174,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoToSafePlace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GoToSoldier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
