@@ -20,10 +20,8 @@ private:
 	static constexpr int NUM_OF_TEAMS = 2;
 	int** maze;
 	double** securityMap;
-	double** visibilityMap;
 	Room* rooms[NUM_OF_ROOMS];
 	Team* teams[NUM_OF_TEAMS];
-	Grenade* pGrenade;
 	int teamTurn;
 
 	void initMap();
@@ -32,9 +30,9 @@ public:
 	Map();
 	Map(const char* fileName);
 	~Map();
+
 	int** getMaze() const { return this->maze; }
 	double** getSecurityMap() const { return this->securityMap; }
-	double** getVisibilityMap() const { return this->visibilityMap; }
 	Room** getRooms() { return this->rooms; }
 	bool hasOverlap(int width, int height, int x, int y, int index);
 	void setupRooms();
@@ -44,7 +42,6 @@ public:
 	void digPath(int index1, int index2);
 	void digPassages();
 	void placeTeams();
-	void createVisibilityMap();
 	void createSecurityMap();
 	void findClosestEnemy(NPC* npc);
 	void findClosestHealthStorage(Support* support);

@@ -12,7 +12,7 @@ Team::~Team()
 	delete this->support;
 }
 
-void Team::initTeam(int** maze, Room* room)
+void Team::initTeam(int** maze, double** securityMap, Room* room)
 {
 	int row, col, maxRow, minRow, maxCol, minCol;
 	minRow = room->getCenter().getY() - room->getHeight() / 2;
@@ -26,12 +26,12 @@ void Team::initTeam(int** maze, Room* room)
 		col = minCol + (rand() % (maxCol - minCol));
 		if (i < NUM_OF_SOLDIERS)
 		{
-			this->soldiers[i] = new Soldier(Point(row, col), this->id);
+			this->soldiers[i] = new Soldier(Point(row, col), this->id, maze, securityMap);
 			maze[row][col] = static_cast<MapCell>(this->id);
 		}
 		else
 		{
-			this->support = new Support(Point(row, col), this->soldiers, this->id);
+			this->support = new Support(Point(row, col), this->soldiers, this->id, maze, securityMap);
 			maze[row][col] = static_cast<MapCell>(this->id + 1);
 		}
 	}
@@ -50,19 +50,19 @@ bool Team::theyAllDeads()
 	return this->support->isDead();
 }
 
-void Team::play(int** maze, double** securityMap)
+void Team::play()
 {
 	int i;
 	for (i = 0; i < NUM_OF_SOLDIERS; i++)
 	{
 		if (i == this->npcTurn)
 		{
-			this->soldiers[i]->play(maze, securityMap);
+			this->soldiers[i]->play();
 		}
 	}
 	if (i == this->npcTurn)
 	{
-		this->support->play(maze, securityMap);
+		this->support->play();
 	}
 	this->nextTurn();
 }

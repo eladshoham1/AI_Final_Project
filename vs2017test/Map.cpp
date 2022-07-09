@@ -5,8 +5,7 @@ Map::Map()
 	initMap();
 	setupRooms();
 	placeTeams();
-	//createVisibilityMap();
-	//createSecurityMap();
+	createSecurityMap();
 }
 
 Map::Map(const char* fileName)
@@ -26,8 +25,7 @@ Map::Map(const char* fileName)
 		saveMapToFile(fileName);
 	}
 	placeTeams();
-	//createVisibilityMap();
-	//createSecurityMap();
+	createSecurityMap();
 }
 
 Map::~Map()
@@ -39,10 +37,6 @@ Map::~Map()
 	for (int i = 0; i < MSZ; i++)
 		delete this->securityMap[i];
 	delete this->securityMap;
-
-	for (int i = 0; i < MSZ; i++)
-		delete this->visibilityMap[i];
-	delete this->visibilityMap;
 
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
 		delete this->teams[i];
@@ -57,10 +51,6 @@ void Map::initMap()
 	this->securityMap = new double*[MSZ];
 	for (int i = 0; i < MSZ; i++)
 		this->securityMap[i] = new double[MSZ] {0};
-
-	this->visibilityMap = new double*[MSZ];
-	for (int i = 0; i < MSZ; i++)
-		this->visibilityMap[i] = new double[MSZ] {0};
 
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
 		this->teams[i] = new Team((int)SOLDIER_TEAM_ONE + i * 2);
@@ -256,24 +246,19 @@ void Map::digPassages()
 void Map::placeTeams()
 {
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
-		this->teams[i]->initTeam(this->maze, this->rooms[rand() % NUM_OF_ROOMS]);
-}
-
-void Map::createVisibilityMap()
-{
-	//this->pGrenade->simulateVisibility(this->maze, this->visibilityMap);
+		this->teams[i]->initTeam(this->maze, this->securityMap, this->rooms[rand() % NUM_OF_ROOMS]);
 }
 
 void Map::createSecurityMap()
 {
-	int num_simulations = 500;
+	int numOfSimulations = 500;
 	double damage = 0.001;
 	int i;
 	Grenade* g;
-
-	for (i = 0; i < num_simulations; i++)
+	
+	for (i = 0; i < numOfSimulations; i++)
 	{
-		g = new Grenade(Point(rand() % MSZ, rand() % MSZ));
+		g = new Grenade(rand() % MSZ, rand() % MSZ);
 		g->simulateExplosion(this->maze, this->securityMap, damage);
 	}
 }
@@ -344,7 +329,6 @@ void Map::findClosestAmmoStorage(Support* support)
 void Map::showMaze()
 {
 	int i, j;
-	double d, v;
 
 	for (i = 0; i < MSZ; i++)
 	{
@@ -357,9 +341,7 @@ void Map::showMaze()
 				glColor3d(0.1, 0.1, 0.1); // dark gray
 				break;
 			case SPACE:
-				d = this->securityMap[i][j];
-				v = this->visibilityMap[i][j];
-				glColor3d(1 - d - 0.5 * v, 1 - d, 1 - d - 0.5 * v); // white - security map value - visibility map value
+				glColor3d(1.0, 1.0, 1.0); // white
 				break;
 			case OBSTACLE:
 				glColor3d(0.4, 0.4, 0.4); // gray
@@ -405,7 +387,7 @@ bool Map::play()
 		{
 			if (i == this->teamTurn)
 			{
-				this->teams[i]->play(this->maze, this->securityMap);
+				this->teams[i]->play();
 				for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
 				{
 					this->findClosestEnemy(this->teams[i]->getSoldiers()[j]);

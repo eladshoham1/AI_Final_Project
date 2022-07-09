@@ -14,7 +14,7 @@ private:
 
 public:
 	Bullet();
-	Bullet(Point position, double directionAngle);
+	Bullet(double x, double y, double directionAngle);
 	~Bullet();
 
 	void show();

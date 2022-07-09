@@ -28,7 +28,11 @@ void GoToSoldier::transform(NPC* pn)
 
 void GoToSoldier::onEnter(NPC* pn)
 {
-	
+	Support *support = dynamic_cast<Support*>(pn);
+	if (support)
+	{
+		support->setIsMoving(true);
+	}
 }
 
 void GoToSoldier::onExit(NPC* pn)

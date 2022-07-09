@@ -13,7 +13,7 @@ private:
 
 public:
 	Grenade();
-	Grenade(Point position);
+	Grenade(double x, double y);
 	~Grenade();
 
 	bool getIsExploded() { return this->isExploded; }

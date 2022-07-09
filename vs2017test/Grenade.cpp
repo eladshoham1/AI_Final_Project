@@ -5,11 +5,11 @@ Grenade::Grenade()
 {
 }
 
-Grenade::Grenade(Point position) : Ammo(position)
+Grenade::Grenade(double x, double y) : Ammo(x, y)
 {
 	double teta = 2 * PI / NUM_OF_BULLETS;
 	for (int i = 0; i < NUM_OF_BULLETS; i++)
-		this->bullets[i] = new Bullet(position, i * teta);
+		this->bullets[i] = new Bullet(x, y, i * teta);
 
 	this->isExploded = false;
 }

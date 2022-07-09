@@ -5,17 +5,25 @@ NPC::NPC()
 {
 }
 
-NPC::NPC(const Point& position, int teamId)
+NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap)
 {
 	this->setPosition(position);
 	this->pCurrentState = nullptr;
 	this->isMoving = false;
 	this->hp = MAX_HP;
 	this->teamId = teamId;
+	this->maze = maze;
+	this->securityMap = securityMap;
+	this->visibilityMap = new double*[MSZ];
+	for (int i = 0; i < MSZ; i++)
+		visibilityMap[i] = new double[MSZ] {0};
 }
 
 NPC::~NPC()
 {
+	for (int i = 0; i < MSZ; i++)
+		delete this->visibilityMap[i];
+	delete this->visibilityMap;
 }
 
 void NPC::setTarget(Point target, MapCell targetMapCell)
@@ -40,11 +48,11 @@ void NPC::insertToGrays(vector<Cell*>& grays, Cell* pCell)
 	grays.push_back(pCell);
 }
 
-void NPC::checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col)
+void NPC::checkNeighbor(int** maze, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col)
 {
 	vector<Cell>::iterator it_gray;
 	vector<Cell>::iterator it_black;
-	double cost = securityMap[row][col];
+	double cost = this->securityMap[row][col];
 
 	// who can be the neighbor
 	if ((row == this->target.getX() && col == this->target.getY()) || maze[row][col] == SPACE)
@@ -56,7 +64,6 @@ void NPC::checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, 
 		it_black = find(blacks.begin(), blacks.end(), pn);
 		if (it_black != blacks.end()) // it was found i.e. it is black
 			return;
-		//cout << "row: " << row << " col: " << col << " targetRow: " << this->target.getX() << " targetCol: " << this->target.getY() << endl;
 		// white
 		it_gray = find(grays.begin(), grays.end(), pn);
 		if (it_gray == grays.end()) // it wasn't found => it is white
@@ -66,7 +73,6 @@ void NPC::checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, 
 		}
 		else // it is gray
 		{
-			//   new F       ?      old F
 			if (pn.getF() < it_gray->getF()) // then update it (F of neighbor)
 			{
 				// we need to update it in two places:
@@ -119,7 +125,7 @@ void NPC::hit(double damage)
 	}
 }
 
-void NPC::goToTarget(int** maze, double** securityMap)
+void NPC::goToTarget()
 {
 	int row, col;
 	vector <Cell> grays;
@@ -144,10 +150,10 @@ void NPC::goToTarget(int** maze, double** securityMap)
 		{ //in this case there cannot be a better path to target!!!		
 			if (pCurrent->getParent()->getParent() == nullptr) // then next step is target
 			{
-				if (maze[pCurrent->getRow()][pCurrent->getCol()] == SPACE)
+				if (this->maze[pCurrent->getRow()][pCurrent->getCol()] == SPACE)
 				{
-					maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
-					maze[pCurrent->getRow()][pCurrent->getCol()] = static_cast<MapCell>(this->teamId + (dynamic_cast<Support*>(this) ? 1 : 0));
+					this->maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
+					this->maze[pCurrent->getRow()][pCurrent->getCol()] = static_cast<MapCell>(this->teamId + (dynamic_cast<Support*>(this) ? 1 : 0));
 					this->setPosition(Point(pCurrent->getRow(), pCurrent->getCol()));
 					delete pCurrent->getParent();
 					delete pCurrent;
@@ -163,8 +169,8 @@ void NPC::goToTarget(int** maze, double** securityMap)
 
 					if (pCurrent->getParent()->getParent() == nullptr) // next step
 					{
-						maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
-						maze[pCurrent->getRow()][pCurrent->getCol()] = static_cast<MapCell>(this->teamId + (dynamic_cast<Support*>(this) ? 1 : 0));
+						this->maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
+						this->maze[pCurrent->getRow()][pCurrent->getCol()] = static_cast<MapCell>(this->teamId + (dynamic_cast<Support*>(this) ? 1 : 0));
 						this->setPosition(Point(pCurrent->getRow(), pCurrent->getCol()));
 						delete pCurrent->getParent();
 						delete pCurrent;
@@ -187,22 +193,25 @@ void NPC::goToTarget(int** maze, double** securityMap)
 		col = pCurrent->getCol();
 		// try to go UP (row -1)
 		if (row > 0) // we can go UP
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row - 1, col);
+			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row - 1, col);
 		if (row < MSZ - 1) // DOWN
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row + 1, col);
+			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row + 1, col);
 		if (col < MSZ - 1) // RIGHT
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row, col + 1);
+			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row, col + 1);
 		if (col > 0) //LEFT
-			this->checkNeighbor(maze, securityMap, pq, grays, blacks, pCurrent, row, col - 1);
+			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row, col - 1);
 	}
 }
 
-void NPC::play(int ** maze, double ** securityMap)
+void NPC::play()
 {
 	if (!this->isDead())
 	{
 		this->pCurrentState->transform(this);
-		this->goToTarget(maze, securityMap);
+		if (this->isMoving)
+		{
+			this->goToTarget();
+		}
 	}
 	else
 	{

@@ -25,9 +25,9 @@ public:
 	Soldier** getSoldiers() { return this->soldiers; }
 	Support* getSupport() { return this->support; }
 	int getId() { return this->id; }
-	void initTeam(int** maze, Room* room);
+	void initTeam(int** maze, double** securityMap, Room* room);
 	bool theyAllDeads();
-	void play(int** maze, double** securityMap);
+	void play();
 	void nextTurn();
 	void show();
 };

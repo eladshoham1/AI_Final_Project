@@ -6,7 +6,6 @@
 #include "Cell.h"
 #include "CompareCells.h"
 #include "State.h"
-#include "AttackEnemy.h"
 
 using namespace std;
 
@@ -24,14 +23,17 @@ protected:
 	bool isMoving;
 	double hp;
 	int teamId;
+	int** maze;
+	double** securityMap;
+	double** visibilityMap;
 	NPC* closestEnemy;
 
 	void insertToGrays(vector<Cell*>& grays, Cell* pCell);
-	void checkNeighbor(int** maze, double** securityMap, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col);
+	void checkNeighbor(int** maze, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col);
 
 public:
 	NPC();
-	NPC(const Point& position, int teamId);
+	NPC(const Point& position, int teamId, int** maze, double** securityMap);
 	virtual ~NPC();
 
 	Point getPosition() { return this->position; }
@@ -49,11 +51,12 @@ public:
 	void setClosestEnemy(NPC* closestEnemy) { this->closestEnemy = closestEnemy; }
 	double hpLack() const { return MAX_HP - this->hp; }
 	bool getIsMoving() const { return this->isMoving; }
+	void setIsMoving(bool isMoving) { this->isMoving = isMoving; }
 	bool isInDanger() { return this->hp < MAX_HP / 2.0; }
 	bool isDead() { return this->hp == 0; }
 	bool isAtTarget();
 	void hit(double damage);
-	void goToTarget(int** maze, double** securityMap);
-	void play(int** maze, double** securityMap);
+	void goToTarget();
+	void play();
 	virtual void show() = 0;
 };

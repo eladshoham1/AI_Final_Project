@@ -18,7 +18,7 @@ private:
 
 public:
 	Support();
-	Support(const Point& position, Soldier** soldiers, int teamId);
+	Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap);
 	~Support();
 
 	Soldier** getSoldiers() { return this->soldiers; }

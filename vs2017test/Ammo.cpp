@@ -4,9 +4,10 @@ Ammo::Ammo()
 {
 }
 
-Ammo::Ammo(Point position)
+Ammo::Ammo(double x, double y)
 {
-	this->position = position;
+	this->setX(x);
+	this->setY(y);
 }
 
 Ammo::~Ammo()

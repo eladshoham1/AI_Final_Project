@@ -28,11 +28,11 @@ void GoToHealthStorage::transform(NPC* pn)
 
 void GoToHealthStorage::onEnter(NPC* pn)
 {
-	/*Support *support = dynamic_cast<Support*>(pn);
+	Support *support = dynamic_cast<Support*>(pn);
 	if (support)
 	{
-		support->setSearchForClose
-	}*/
+		support->setIsMoving(true);
+	}
 }
 
 void GoToHealthStorage::onExit(NPC* pn)
