@@ -110,7 +110,7 @@ void Map::saveMapToFile(const char* fileName)
 //         2: if  F of the new found neghbor IS better (<) then we have to update the cell parameters!!!
 void Map::checkNeighbor(int row, int col, Cell* pcurrent, priority_queue <Cell, vector<Cell>, CompareCells>&pq, vector<Cell> &grays, vector<Cell> &blacks)
 {
-	double cost, cheap = 0.1, expensive = 1.4;
+	double cost, cheap = 0.1, expensive = 0.8;
 	vector <Cell>::iterator itrb;
 	vector <Cell>::iterator itrg;
 
@@ -252,7 +252,7 @@ void Map::placeTeams()
 void Map::createSecurityMap()
 {
 	int numOfSimulations = 500;
-	double damage = 0.001;
+	double damage = 0.01;
 	int i;
 	Grenade* g;
 	
@@ -396,6 +396,25 @@ bool Map::play()
 				this->findClosestHealthStorage(this->teams[i]->getSupport());
 				this->findClosestAmmoStorage(this->teams[i]->getSupport());
 				this->nextTurn();
+			}
+			for (int j = 0; j < NUM_OF_ROOMS; j++)
+			{
+				HealthStorage** healthStorages = this->rooms[j]->getHealthStorages();
+				for (int k = 0; k < Room::NUM_OF_HEALTH_STORAGE; k++)
+				{
+					if (healthStorages[k]->isEmpty())
+					{
+						this->maze[healthStorages[k]->getPosition().getX()][healthStorages[k]->getPosition().getY()] = OBSTACLE;
+					}
+				}
+				AmmoStorage** ammoStorages = this->rooms[j]->getAmmoStorages();
+				for (int k = 0; k < Room::NUM_OF_AMMO_STORAGE; k++)
+				{
+					if (ammoStorages[k]->isEmpty())
+					{
+						this->maze[ammoStorages[k]->getPosition().getX()][ammoStorages[k]->getPosition().getY()] = OBSTACLE;
+					}
+				}
 			}
 		}
 		else

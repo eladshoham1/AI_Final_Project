@@ -1,6 +1,6 @@
 #pragma once
 #include "State.h"
-#include "GoToSoldier.h"
+#include "BringHealthToSoldier.h"
 
 class GoToHealthStorage : public State
 {

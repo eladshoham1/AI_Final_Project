@@ -1,6 +1,5 @@
 #pragma once
 #include "State.h"
-#include "ReloadBullets.h"
 
 class GoToSafePlace : public State
 {

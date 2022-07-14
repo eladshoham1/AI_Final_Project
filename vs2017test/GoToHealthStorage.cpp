@@ -11,17 +11,26 @@ GoToHealthStorage::~GoToHealthStorage()
 
 void GoToHealthStorage::transform(NPC* pn)
 {
+	cout << "go to health storage" << endl;
 	Support *support = dynamic_cast<Support*>(pn);
 	if (support)
 	{
-		if (!support->isAtTarget())
+		if (!support->isInDanger())
 		{
-			support->goToClosestHealthStorage();
+			if (!support->isAtTarget())
+			{
+				support->goToClosestHealthStorage();
+			}
+			else
+			{
+				support->takeHealthFromStorage();
+				pn->setCurrentState(new BringHealthToSoldier());
+			}
 		}
 		else
 		{
-			support->takeHealthFromStorage();
-			pn->setCurrentState(new GoToSoldier());
+			pn->setCurrentState(new GoToSafePlace());
+			pn->getCurrentState()->onEnter(pn);
 		}
 	}
 }

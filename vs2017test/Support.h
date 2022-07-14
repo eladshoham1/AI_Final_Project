@@ -30,7 +30,10 @@ public:
 	int getAmmo() const { return this->ammo; }
 	void bringHealthToSoldiers();
 	void takeHealthFromStorage();
+	void takeAmmoFromStorage();
 	void goToClosestHealthStorage();
+	void goToClosestAmmoStorage();
+	void goToSafePlace();
 	void show();
 };
 

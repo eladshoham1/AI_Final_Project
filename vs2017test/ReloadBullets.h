@@ -11,4 +11,3 @@ public:
 	void onEnter(NPC* pn);
 	void onExit(NPC* pn);
 };
-

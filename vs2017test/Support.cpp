@@ -65,10 +65,35 @@ void Support::takeHealthFromStorage()
 	}
 }
 
+void Support::takeAmmoFromStorage()
+{
+	double amount = 0.0;
+	if (this->isAtTarget())
+	{
+		for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
+		{
+			amount += this->soldiers[i]->ammoLack();
+		}
+		this->ammo += this->closestAmmoStorage->supply((int)ceil(amount));
+	}
+}
+
 void Support::goToClosestHealthStorage()
 {
 	if (this->closestHealthStorage != nullptr)
 	{
 		this->setTarget(this->closestHealthStorage->getPosition(), HEALTH);
 	}
+}
+
+void Support::goToClosestAmmoStorage()
+{
+	if (this->closestAmmoStorage != nullptr)
+	{
+		this->setTarget(this->closestAmmoStorage->getPosition(), AMMO);
+	}
+}
+
+void Support::goToSafePlace()
+{
 }

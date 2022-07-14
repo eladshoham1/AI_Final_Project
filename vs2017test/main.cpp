@@ -30,7 +30,7 @@ void display()
 
 void idle()
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+	//std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
 	gameManager->idle();
 
 	glutPostRedisplay(); // indirect call to refresh function (display)

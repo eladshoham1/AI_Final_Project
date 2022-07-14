@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "Grenade.h"
 #include "SearchEnemy.h"
+#include "ReloadBullets.h"
 
 class Soldier : public NPC
 {
@@ -27,13 +28,14 @@ public:
 	bool hasBulletsInStock() { return this->bulletsInStock > 0; }
 	bool isWaitingForSupport() { return this->waitingForSupport; }
 	void setWaitingForSupport(bool waitingForSupport) { this->waitingForSupport = waitingForSupport; }
+	int ammoLack() { return MAX_BULLETS - this->bulletsInStock; }
 	void setVisibilityMap();
 	void loadBullets();
 	void addBulletsToStock(int numOfBullets);
-	double distanceFromEnemy();
 	bool isEnemyVisible();
 	void attack();
 	bool shoot();
 	bool throwGrenade();
+	void goToSafePlace();
 	void show();
 };

@@ -20,16 +20,17 @@ protected:
 	MapCell targetMapCell;
 	State* pCurrentState;
 	State* pInterruptedState;
+	int teamId;
 	bool isMoving;
 	double hp;
-	int teamId;
+	bool dead;
 	int** maze;
 	double** securityMap;
 	double** visibilityMap;
 	NPC* closestEnemy;
 
 	void insertToGrays(vector<Cell*>& grays, Cell* pCell);
-	void checkNeighbor(int** maze, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col);
+	void checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col);
 
 public:
 	NPC();
@@ -52,11 +53,14 @@ public:
 	double hpLack() const { return MAX_HP - this->hp; }
 	bool getIsMoving() const { return this->isMoving; }
 	void setIsMoving(bool isMoving) { this->isMoving = isMoving; }
-	bool isInDanger() { return this->hp < MAX_HP / 2.0; }
-	bool isDead() { return this->hp == 0; }
+	void setAsDead();
+	bool isDead() { return this->dead; }
+	double distanceFromEnemy();
+	bool isInDanger();
 	bool isAtTarget();
 	void hit(double damage);
 	void goToTarget();
 	void play();
+	virtual void goToSafePlace() = 0;
 	virtual void show() = 0;
 };

@@ -9,9 +9,10 @@ NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap)
 {
 	this->setPosition(position);
 	this->pCurrentState = nullptr;
+	this->teamId = teamId;
 	this->isMoving = false;
 	this->hp = MAX_HP;
-	this->teamId = teamId;
+	this->dead = false;
 	this->maze = maze;
 	this->securityMap = securityMap;
 	this->visibilityMap = new double*[MSZ];
@@ -48,14 +49,14 @@ void NPC::insertToGrays(vector<Cell*>& grays, Cell* pCell)
 	grays.push_back(pCell);
 }
 
-void NPC::checkNeighbor(int** maze, priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col)
+void NPC::checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col)
 {
 	vector<Cell>::iterator it_gray;
 	vector<Cell>::iterator it_black;
 	double cost = this->securityMap[row][col];
 
 	// who can be the neighbor
-	if ((row == this->target.getX() && col == this->target.getY()) || maze[row][col] == SPACE)
+	if ((row == this->target.getX() && col == this->target.getY()) || this->maze[row][col] == SPACE)
 	{
 		// this is the neighbor
 		Cell pn = Cell(row, col, pCurrent, pCurrent->getG() + cost, this->target.getX(), this->target.getY());
@@ -108,6 +109,36 @@ void NPC::checkNeighbor(int** maze, priority_queue <Cell, vector<Cell>, CompareC
 	}
 }
 
+void NPC::setAsDead()
+{
+	this->dead = true;
+	this->maze[this->position.getX()][this->position.getY()] = SPACE;
+}
+
+double NPC::distanceFromEnemy()
+{
+	if (this->closestEnemy != nullptr)
+	{
+		return this->position.euclideanDistance(this->closestEnemy->getPosition());
+	}
+	return 0.0;
+}
+
+bool NPC::isInDanger()
+{
+	if (this->closestEnemy != nullptr)
+	{
+		if (this->distanceFromEnemy() < 10)
+		{
+			if (dynamic_cast<Support*>(this) || this->hp < MAX_HP / 2.0)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 bool NPC::isAtTarget()
 {
 	return abs(this->position.getX() - this->target.getX()) <= 1 && abs(this->position.getY() - this->target.getY()) <= 1;
@@ -128,27 +159,24 @@ void NPC::hit(double damage)
 void NPC::goToTarget()
 {
 	int row, col;
-	vector <Cell> grays;
-	vector <Cell> blacks;
-	priority_queue <Cell, vector<Cell>, CompareCells> pq;
-
-	Cell* pstart = new Cell(this->position.getX(), this->position.getY(), nullptr, 0, this->target.getX(), this->target.getY());
-	Cell* pCurrent;
-	// initializes grays and pq
-	grays.push_back(*pstart);
-	pq.push(*pstart);
-	delete pstart;
+	vector<Cell> grays, blacks;
+	priority_queue<Cell, vector<Cell>, CompareCells> pq;
 	vector<Cell>::iterator it_gray;
+	Cell* pCurrent;
+	Cell* pStart = new Cell(this->position.getX(), this->position.getY(), nullptr, 0, this->target.getX(), this->target.getY());
+
+	grays.push_back(*pStart);
+	pq.push(*pStart);
+	delete pStart;
+
 	while (!pq.empty())
 	{
 		pCurrent = new Cell(pq.top());
 		pq.pop();
 
-		// If current is actually a target then we stop A*	
-		
-		if (pCurrent->getRow() == this->target.getX() && pCurrent->getCol() == this->target.getY()) // then it is target	
-		{ //in this case there cannot be a better path to target!!!		
-			if (pCurrent->getParent()->getParent() == nullptr) // then next step is target
+		if (pCurrent->getRow() == this->target.getX() && pCurrent->getCol() == this->target.getY())
+		{
+			if (pCurrent->getParent()->getParent() == nullptr)
 			{
 				if (this->maze[pCurrent->getRow()][pCurrent->getCol()] == SPACE)
 				{
@@ -158,8 +186,6 @@ void NPC::goToTarget()
 					delete pCurrent->getParent();
 					delete pCurrent;
 				}
-				else
-					return; // dont want to step over target, as it isnt space
 			}
 			else
 			{
@@ -182,39 +208,32 @@ void NPC::goToTarget()
 				}
 			}
 		}
-
-		// paint current black
-		blacks.push_back(*pCurrent);
-		it_gray = find(grays.begin(), grays.end(), *pCurrent);
-		if (it_gray != grays.end()) // current was found
-			grays.erase(it_gray); // and removed from grays
-		// now check the neighbors of current
-		row = pCurrent->getRow();
-		col = pCurrent->getCol();
-		// try to go UP (row -1)
-		if (row > 0) // we can go UP
-			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row - 1, col);
-		if (row < MSZ - 1) // DOWN
-			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row + 1, col);
-		if (col < MSZ - 1) // RIGHT
-			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row, col + 1);
-		if (col > 0) //LEFT
-			this->checkNeighbor(this->maze, pq, grays, blacks, pCurrent, row, col - 1);
+		else
+		{
+			blacks.push_back(*pCurrent);
+			it_gray = find(grays.begin(), grays.end(), *pCurrent);
+			if (it_gray != grays.end()) // current was found
+				grays.erase(it_gray); // removed from grays
+			// now check the neighbors of current
+			row = pCurrent->getRow();
+			col = pCurrent->getCol();
+			if (row > 0) // UP
+				this->checkNeighbor(pq, grays, blacks, pCurrent, row - 1, col);
+			if (row < MSZ - 1) // DOWN
+				this->checkNeighbor(pq, grays, blacks, pCurrent, row + 1, col);
+			if (col < MSZ - 1) // RIGHT
+				this->checkNeighbor(pq, grays, blacks, pCurrent, row, col + 1);
+			if (col > 0) //LEFT
+				this->checkNeighbor(pq, grays, blacks, pCurrent, row, col - 1);
+		}
 	}
 }
 
 void NPC::play()
 {
-	if (!this->isDead())
+	this->pCurrentState->transform(this);
+	if (this->isMoving)
 	{
-		this->pCurrentState->transform(this);
-		if (this->isMoving)
-		{
-			this->goToTarget();
-		}
-	}
-	else
-	{
-		maze[this->position.getX()][this->position.getY()] = SPACE;
+		this->goToTarget();
 	}
 }

@@ -81,9 +81,6 @@
     <ClCompile Include="GoToSafePlace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GoToSoldier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SearchEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +88,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ReloadBullets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BringHealthToSoldier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BringAmmoToSoldier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dead.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,9 +173,6 @@
     <ClInclude Include="GoToSafePlace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GoToSoldier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SearchEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -177,6 +180,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReloadBullets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BringHealthToSoldier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BringAmmoToSoldier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,6 +11,27 @@ GoToAmmoStorage::~GoToAmmoStorage()
 
 void GoToAmmoStorage::transform(NPC* pn)
 {
+	Support *support = dynamic_cast<Support*>(pn);
+	if (support)
+	{
+		if (!support->isInDanger())
+		{
+			if (!support->isAtTarget())
+			{
+				support->goToClosestAmmoStorage();
+			}
+			else
+			{
+				support->takeAmmoFromStorage();
+				pn->setCurrentState(new BringAmmoToSoldier());
+			}
+		}
+		else
+		{
+			pn->setCurrentState(new GoToSafePlace());
+			pn->getCurrentState()->onEnter(pn);
+		}
+	}
 }
 
 void GoToAmmoStorage::onEnter(NPC* pn)
