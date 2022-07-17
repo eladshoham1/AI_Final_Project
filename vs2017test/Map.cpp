@@ -245,8 +245,27 @@ void Map::digPassages()
 
 void Map::placeTeams()
 {
+	vector<NPC*> enemies;
+
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
-		this->teams[i]->initTeam(this->maze, this->securityMap, this->rooms[rand() % NUM_OF_ROOMS]);
+	{
+		this->teams[i]->initTeam(this->maze, this->securityMap, this->rooms[rand() % NUM_OF_ROOMS], this->teams[i % NUM_OF_TEAMS]);
+	}
+
+	for (int i = 0; i < NUM_OF_TEAMS; i++)
+	{
+		for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
+		{
+			enemies.push_back(this->teams[(i + 1) % NUM_OF_TEAMS]->getSoldiers()[j]);
+		}
+		enemies.push_back(this->teams[(i + 1) % NUM_OF_TEAMS]->getSupport());
+		for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
+		{
+			this->teams[i]->getSoldiers()[j]->setEnemies(enemies);
+		}
+		this->teams[i]->getSupport()->setEnemies(enemies);
+		enemies.clear();
+	}
 }
 
 void Map::createSecurityMap()
@@ -387,7 +406,7 @@ bool Map::play()
 		{
 			if (i == this->teamTurn)
 			{
-				this->teams[i]->play();
+				this->teams[i]->play(this->maze);
 				for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
 				{
 					this->findClosestEnemy(this->teams[i]->getSoldiers()[j]);

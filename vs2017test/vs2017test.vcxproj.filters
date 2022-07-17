@@ -60,12 +60,6 @@
     <ClCompile Include="Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GoToHealthStorage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GoToAmmoStorage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Ammo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,13 +84,13 @@
     <ClCompile Include="ReloadBullets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BringHealthToSoldier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BringAmmoToSoldier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Dead.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GoToStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplyToSoldier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,12 +146,6 @@
     <ClInclude Include="Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GoToHealthStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GoToAmmoStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ammo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -182,13 +170,13 @@
     <ClInclude Include="ReloadBullets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BringHealthToSoldier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BringAmmoToSoldier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Dead.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GoToStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyToSoldier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

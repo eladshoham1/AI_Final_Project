@@ -6,20 +6,21 @@
 
 class Bullet : public Ammo
 {
-
 private:
 	static constexpr float SPEED = 0.1f;
+	Point shootingPosition;
 	double directionAngle;
 	bool isMoving;
 
 public:
 	Bullet();
-	Bullet(double x, double y, double directionAngle);
+	Bullet(double x, double y, const Point& shootingPosition, double directionAngle);
 	~Bullet();
 
+	Point getShootingPosition() const { return this->shootingPosition; }
 	void show();
 	void fire() { isMoving = true; }
-	void move(int** maze);
+	Point* move(int** maze);
 	bool getIsMoving() { return isMoving; }
 	void simulateMotion(int** maze, double** securityMap, double damage);
 	void simulateVisibility(int** maze, double** securityMap);

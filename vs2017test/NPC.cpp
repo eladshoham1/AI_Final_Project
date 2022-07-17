@@ -5,7 +5,7 @@ NPC::NPC()
 {
 }
 
-NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap)
+NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap, NPC* leader)
 {
 	this->setPosition(position);
 	this->pCurrentState = nullptr;
@@ -15,6 +15,8 @@ NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap)
 	this->dead = false;
 	this->maze = maze;
 	this->securityMap = securityMap;
+	this->leader = leader;
+	this->enemies = enemies;
 	this->visibilityMap = new double*[MSZ];
 	for (int i = 0; i < MSZ; i++)
 		visibilityMap[i] = new double[MSZ] {0};
@@ -27,10 +29,9 @@ NPC::~NPC()
 	delete this->visibilityMap;
 }
 
-void NPC::setTarget(Point target, MapCell targetMapCell)
+void NPC::setTarget(const Point& target)
 {
 	this->target = target;
-	this->targetMapCell = targetMapCell;
 }
 
 void NPC::insertToGrays(vector<Cell*>& grays, Cell* pCell)
@@ -49,7 +50,7 @@ void NPC::insertToGrays(vector<Cell*>& grays, Cell* pCell)
 	grays.push_back(pCell);
 }
 
-void NPC::checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector <Cell>& grays, vector <Cell>& blacks, Cell* pCurrent, int row, int col)
+void NPC::checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, vector<Cell>& grays, vector<Cell>& blacks, Cell* pCurrent, int row, int col)
 {
 	vector<Cell>::iterator it_gray;
 	vector<Cell>::iterator it_black;
@@ -106,6 +107,18 @@ void NPC::checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, v
 				}
 			}
 		}
+	}
+}
+
+void NPC::supplyHP(int hp)
+{
+	if (this->hp + hp > MAX_HP)
+	{
+		this->hp = MAX_HP;
+	}
+	else
+	{
+		this->hp += hp;
 	}
 }
 
@@ -227,6 +240,99 @@ void NPC::goToTarget()
 				this->checkNeighbor(pq, grays, blacks, pCurrent, row, col - 1);
 		}
 	}
+}
+
+void NPC::followLeader()
+{
+	if (this->leader != nullptr)
+	{
+		this->setTarget(this->leader->getPosition());
+	}
+}
+
+bool NPC::moveToSafestPosition()
+{
+	Point safestPoisition;
+	double minValue;
+	bool foundFirst = false;
+	int row{}, col{};
+	MapCell currentMark;
+	int playerRow, playerCol;
+	playerRow = this->position.getX();
+	playerCol = this->position.getY();
+
+	for (int r = this->position.getX() - 11 / 2; r <= this->position.getX()+ 11 / 2; r++)
+	{
+		for (int c = this->position.getY() - 11 / 2; c <= this->position.getY() + 11 / 2; c++)
+		{
+			if (r >= 0 && r < MSZ && c >= 0 && c < MSZ)
+			{
+				currentMark = static_cast<MapCell>(maze[r][c]);
+				if ((currentMark == SPACE || (r == playerRow && c == playerCol)) && !foundFirst)
+				{
+					minValue = static_cast<MapCell>(maze[r][c]);
+					row = r;
+					col = c;
+					foundFirst = true;
+				}
+				else if ((currentMark == SPACE || (r == playerRow && c == playerCol)) && foundFirst && maze[r][c] < minValue)
+				{
+					minValue = static_cast<MapCell>(maze[r][c]);
+					row = r;
+					col = c;
+				}
+			}
+		}
+	}
+	if (foundFirst)
+	{
+		//cout << "foundFirst" << endl;
+		//cout << this->target.euclideanDistance(row, col) << endl;
+		if (this->target.euclideanDistance(row, col) == 0)
+		{
+			//cout << "return true" << endl;
+			return true;
+		}
+		else
+		{
+			this->setTarget(Point(row, col));
+		}
+	}
+	return false;
+}
+
+bool NPC::scanAreaForEnemyGrenades() const
+{
+	vector<NPC*>::const_iterator itr = this->enemies.begin();
+	vector<NPC*>::const_iterator itrEnd = this->enemies.end();
+	Soldier* tempSoldier;
+	Grenade* grenade;
+	int playerRow = this->position.getX();
+	int playerCol = this->position.getY();
+
+	for (; itr != itrEnd; ++itr)
+	{
+		tempSoldier = dynamic_cast<Soldier*>((*itr));
+		if (tempSoldier && tempSoldier->getPGrenade())
+		{
+			grenade = tempSoldier->getPGrenade();
+			for (int row = playerRow - 5 / 2; row <= playerRow + 5 / 2; row++)
+			{
+				for (int col = playerCol - 5 / 2; col <= playerCol + 5 / 2; col++)
+				{
+					if (row >= 0 && row < MSZ && col >= 0 && col < MSZ)
+					{
+						if ((int)grenade->getY() == row && (int)grenade->getX() == col /*&& !grenade->getIsDetonated()*/)
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 void NPC::play()

@@ -8,8 +8,9 @@ Grenade::Grenade()
 Grenade::Grenade(double x, double y) : Ammo(x, y)
 {
 	double teta = 2 * PI / NUM_OF_BULLETS;
+	Point point = Point((int)x, (int)y);
 	for (int i = 0; i < NUM_OF_BULLETS; i++)
-		this->bullets[i] = new Bullet(x, y, i * teta);
+		this->bullets[i] = new Bullet(x, y, point, i * teta);
 
 	this->isExploded = false;
 }

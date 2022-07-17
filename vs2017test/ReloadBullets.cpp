@@ -16,11 +16,15 @@ void ReloadBullets::transform(NPC* pn)
 	{
 		if (soldier->hasBulletsInStock())
 		{
+			//cout << "soldier->loadBullets();" << endl;
 			soldier->loadBullets();
+			//cout << "loadBullets: " << soldier->getLoadedBullets() << endl;
 		}
 		else
 		{
-			if (!soldier->isInDanger() && soldier->hasLoadedBullets())
+			soldier->setWaitingForSupport(true);
+			//cout << "soldier->setWaitingForSupport(true);" << endl;
+			/*if (!soldier->isInDanger() && soldier->hasLoadedBullets())
 			{
 				if (soldier->isEnemyVisible())
 				{
@@ -33,6 +37,11 @@ void ReloadBullets::transform(NPC* pn)
 					soldier->getCurrentState()->onEnter(soldier);
 				}
 			}
+			else
+			{
+				soldier->setCurrentState(new GoToSafePlace());
+				soldier->getCurrentState()->onEnter(soldier);
+			}*/
 		}
 	}
 }

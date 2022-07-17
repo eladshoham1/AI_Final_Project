@@ -12,7 +12,7 @@ Team::~Team()
 	delete this->support;
 }
 
-void Team::initTeam(int** maze, double** securityMap, Room* room)
+void Team::initTeam(int** maze, double** securityMap, Room* room, Team* enemyTeam)
 {
 	int row, col, maxRow, minRow, maxCol, minCol;
 	minRow = room->getCenter().getY() - room->getHeight() / 2;
@@ -26,15 +26,17 @@ void Team::initTeam(int** maze, double** securityMap, Room* room)
 		col = minCol + (rand() % (maxCol - minCol));
 		if (i < NUM_OF_SOLDIERS)
 		{
-			this->soldiers[i] = new Soldier(Point(row, col), this->id, maze, securityMap);
+			this->soldiers[i] = new Soldier(Point(row, col), this->id, maze, securityMap, i == 0 ? nullptr : this->soldiers[0]);
 			maze[row][col] = static_cast<MapCell>(this->id);
 		}
 		else
 		{
-			this->support = new Support(Point(row, col), this->soldiers, this->id, maze, securityMap);
+			this->support = new Support(Point(row, col), this->soldiers, this->id, maze, securityMap, this->soldiers[0]);
 			maze[row][col] = static_cast<MapCell>(this->id + 1);
 		}
 	}
+
+	this->setEnemyTeam(enemyTeam);
 }
 
 bool Team::theyAllDeads()
@@ -50,14 +52,36 @@ bool Team::theyAllDeads()
 	return this->support->isDead();
 }
 
-void Team::play()
+void Team::play(int** maze)
 {
-	int i;
+	int i, j;
 	for (i = 0; i < NUM_OF_SOLDIERS; i++)
 	{
 		if (i == this->npcTurn)
 		{
 			this->soldiers[i]->play();
+			if (this->enemyTeam)
+			{
+				if (this->soldiers[i]->getPBullet())
+				{
+					Point* point = this->soldiers[i]->getPBullet()->move(maze);
+					if (point)
+					{
+						cout << "Point x: " << point->getX() << " y: " << point->getY() << endl;
+						for (j = 0; j < NUM_OF_SOLDIERS; j++)
+						{
+							cout << "Enemy Point x: " << this->enemyTeam->getSoldiers()[j]->getPosition().getX() << " y: " << this->enemyTeam->getSoldiers()[j]->getPosition().getY() << endl;
+							if (*point == this->enemyTeam->getSoldiers()[j]->getPosition())
+							{
+								cout << "hit" << endl;
+								Point shootingPosition = this->soldiers[i]->getPBullet()->getShootingPosition();
+								double distance = point->euclideanDistance(shootingPosition);
+								this->enemyTeam->getSoldiers()[j]->hit(rand() % 10 + distance);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	if (i == this->npcTurn)

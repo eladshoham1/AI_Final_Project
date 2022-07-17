@@ -21,7 +21,12 @@ void Point::setPoint(int x, int y)
 
 double Point::euclideanDistance(const Point& target)
 {
-	return sqrt(pow(this->x - target.getX(), 2) + pow(this->y - target.getY(), 2));
+	return this->euclideanDistance(target.getX(), target.getY());
+}
+
+double Point::euclideanDistance(int x, int y)
+{
+	return sqrt(pow(this->x - x, 2) + pow(this->y - y, 2));
 }
 
 bool Point::operator==(const Point& other)

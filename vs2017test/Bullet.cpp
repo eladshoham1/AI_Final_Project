@@ -5,8 +5,9 @@ Bullet::Bullet()
 }
 
 // angle must be in radians
-Bullet::Bullet(double x, double y, double directionAngle) : Ammo(x, y)
+Bullet::Bullet(double x, double y, const Point& shootingPosition, double directionAngle) : Ammo(x, y)
 {
+	this->shootingPosition = shootingPosition;
 	this->directionAngle = directionAngle;
 	this->isMoving = false;
 }
@@ -17,17 +18,21 @@ Bullet::~Bullet()
 
 void Bullet::show()
 {
-	glColor3d(0, 0, 0);
-	glBegin(GL_POLYGON);
-	glVertex2d(this->x - 0.5, this->y);
-	glVertex2d(this->x, this->y + 0.5);
-	glVertex2d(this->x + 0.5, this->y);
-	glVertex2d(this->x, this->y - 0.5);
-	glEnd();
+	if (this->isMoving)
+	{
+		glColor3d(0, 0, 0);
+		glBegin(GL_POLYGON);
+		glVertex2d(this->x - 0.5, this->y);
+		glVertex2d(this->x, this->y + 0.5);
+		glVertex2d(this->x + 0.5, this->y);
+		glVertex2d(this->x, this->y - 0.5);
+		glEnd();
+	}
 }
 
-void Bullet::move(int** maze)
+Point* Bullet::move(int** maze)
 {
+	Point* point = nullptr;
 	double dx, dy;
 
 	if (this->isMoving)
@@ -36,10 +41,13 @@ void Bullet::move(int** maze)
 		dy = sin(this->directionAngle);
 		this->x += dx * SPEED;
 		this->y += dy * SPEED;
-
 		if (maze[(int)this->y][(int)this->x] != SPACE)
+		{
 			this->isMoving = false;
+			point = new Point((int)this->y, (int)this->x);
+		}
 	}
+	return point;
 }
 
 void Bullet::simulateMotion(int** maze, double** securityMap, double damage)

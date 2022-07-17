@@ -121,7 +121,6 @@
     <ClCompile Include="Ammo.cpp" />
     <ClCompile Include="AmmoStorage.cpp" />
     <ClCompile Include="AttackEnemy.cpp" />
-    <ClCompile Include="BringAmmoToSoldier.cpp" />
     <ClCompile Include="Dead.cpp" />
     <ClCompile Include="SearchEnemy.cpp" />
     <ClCompile Include="Bullet.cpp" />
@@ -129,10 +128,9 @@
     <ClCompile Include="CompareCells.cpp" />
     <ClCompile Include="FillAmmo.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GoToAmmoStorage.cpp" />
-    <ClCompile Include="GoToHealthStorage.cpp" />
+    <ClCompile Include="GoToStorage.cpp" />
     <ClCompile Include="GoToSafePlace.cpp" />
-    <ClCompile Include="BringHealthToSoldier.cpp" />
+    <ClCompile Include="SupplyToSoldier.cpp" />
     <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="HealthStorage.cpp" />
     <ClCompile Include="main.cpp" />
@@ -151,7 +149,6 @@
     <ClInclude Include="Ammo.h" />
     <ClInclude Include="AmmoStorage.h" />
     <ClInclude Include="AttackEnemy.h" />
-    <ClInclude Include="BringAmmoToSoldier.h" />
     <ClInclude Include="Dead.h" />
     <ClInclude Include="SearchEnemy.h" />
     <ClInclude Include="Bullet.h" />
@@ -161,10 +158,9 @@
     <ClInclude Include="FillAmmo.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="glut.h" />
-    <ClInclude Include="GoToAmmoStorage.h" />
-    <ClInclude Include="GoToHealthStorage.h" />
+    <ClInclude Include="GoToStorage.h" />
     <ClInclude Include="GoToSafePlace.h" />
-    <ClInclude Include="BringHealthToSoldier.h" />
+    <ClInclude Include="SupplyToSoldier.h" />
     <ClInclude Include="Grenade.h" />
     <ClInclude Include="HealthStorage.h" />
     <ClInclude Include="Map.h" />

@@ -21,6 +21,7 @@ public:
 	void setY(int y) { this->y = y; }
 	void setPoint(int x, int y);
 	double euclideanDistance(const Point& target);
+	double euclideanDistance(int x, int y);
 	bool operator==(const Point& other);
 	bool operator!=(const Point& other);
 	friend ostream & operator<<(ostream& os, const Point& point);

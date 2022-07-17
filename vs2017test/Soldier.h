@@ -19,9 +19,11 @@ private:
 	
 public:
 	Soldier();
-	Soldier(const Point& position, int teamId, int** maze, double** securityMap);
+	Soldier(const Point& position, int teamId, int** maze, double** securityMap, NPC* leader);
 	~Soldier();
 
+	Bullet* getPBullet() { return this->pBullet; }
+	Grenade* getPGrenade() { return this->pGrenade; }
 	int getLoadedBullets() { return this->loadedBullets; }
 	int getBulletsInStock() { return this->bulletsInStock; }
 	bool hasLoadedBullets() { return this->loadedBullets > 0; }
@@ -29,6 +31,7 @@ public:
 	bool isWaitingForSupport() { return this->waitingForSupport; }
 	void setWaitingForSupport(bool waitingForSupport) { this->waitingForSupport = waitingForSupport; }
 	int ammoLack() { return MAX_BULLETS - this->bulletsInStock; }
+	void supplyBullets(int bullets);
 	void setVisibilityMap();
 	void loadBullets();
 	void addBulletsToStock(int numOfBullets);

@@ -1,5 +1,16 @@
-﻿  GoToAmmoStorage.cpp
+﻿  AttackEnemy.cpp
+  Dead.cpp
+  GameManager.cpp
+  GoToSafePlace.cpp
+  GoToStorage.cpp
+  Map.cpp
   NPC.cpp
+  ReloadBullets.cpp
+  SearchEnemy.cpp
+  Soldier.cpp
+  SupplyToSoldier.cpp
   Support.cpp
+  Team.cpp
+  main.cpp
   Generating Code...
   vs2017test.vcxproj -> C:\Users\elads\Desktop\degree\AI\Final Project\Debug\vs2017test.exe

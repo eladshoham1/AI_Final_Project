@@ -4,7 +4,7 @@ Soldier::Soldier()
 {
 }
 
-Soldier::Soldier(const Point& position, int teamId, int** maze, double** securityMap) : NPC(position, teamId, maze, securityMap)
+Soldier::Soldier(const Point& position, int teamId, int** maze, double** securityMap, NPC* leader) : NPC(position, teamId, maze, securityMap, leader)
 {
 	this->pCurrentState = new SearchEnemy();
 	this->pCurrentState->onEnter(this);
@@ -22,9 +22,25 @@ Soldier::~Soldier()
 void Soldier::show()
 {
 	if (this->pBullet != nullptr)
+	{
 		this->pBullet->show();
+	}
 	if (this->pGrenade != nullptr)
+	{
 		this->pGrenade->show();
+	}
+}
+
+void Soldier::supplyBullets(int bullets)
+{
+	if (this->bulletsInStock + bullets > MAX_BULLETS)
+	{
+		this->bulletsInStock = MAX_BULLETS;
+	}
+	else
+	{
+		this->bulletsInStock += bullets;
+	}
 }
 
 void Soldier::setVisibilityMap()
@@ -70,23 +86,20 @@ void Soldier::addBulletsToStock(int numOfBullets)
 
 bool Soldier::isEnemyVisible()
 {
-	return this->closestEnemy != nullptr && this->distanceFromEnemy() < 10.0;
+	return this->closestEnemy != nullptr && this->distanceFromEnemy() < 1.0;
 }
 
 void Soldier::attack()
 {
-	cout << "Soldier attack" << endl;
 	double distance = this->distanceFromEnemy();
 	if (this->isEnemyVisible())
 	{
 		if (distance < 3.0)
 		{
-			cout << "Soldier this->throwGrenade();" << endl;
 			this->throwGrenade();
 		}
 		else
 		{
-			cout << "Soldier this->shoot();" << endl;
 			this->shoot();
 		}
 	}
@@ -102,16 +115,13 @@ bool Soldier::shoot()
 		{
 			delete this->pBullet;
 		}
-		this->pBullet = new Bullet(this->position.getX(), this->position.getY(), directionAngle);
+		this->pBullet = new Bullet(this->position.getX(), this->position.getY(), this->position, directionAngle);
 		this->pBullet->fire();
-		cout << "Soldier this->pBullet->fire();" << endl;
 		if (this->pBullet != nullptr && this->pBullet->getIsMoving())
 		{
 			this->pBullet->move(this->maze);
-			cout << "Soldier this->pBullet->move(this->maze);" << endl;
 		}
 		this->loadedBullets--;
-		cout << "Soldier loadedBullets: " << this->loadedBullets << endl;
 		return true;
 	}
 	return false;
@@ -137,35 +147,35 @@ bool Soldier::throwGrenade()
 
 void Soldier::goToSafePlace()
 {
-	if (!this->hasLoadedBullets()) {
-		if (this->hasBulletsInStock())
+	cout << "in goToSafePlace" << endl;
+	if (this->moveToSafestPosition())
+	{
+		if (!this->hasLoadedBullets())
 		{
+			cout << "GoToSafePlace !soldier->hasLoadedBullets()" << endl;
 			this->setCurrentState(new ReloadBullets());
-			this->getCurrentState()->onEnter(this);
+			this->pCurrentState->onEnter(this);
 		}
-		else
+		else if (!this->hasBulletsInStock())
 		{
+			cout << "GoToSafePlace !soldier->hasBulletsInStock()" << endl;
+			// check if support is alive
 			this->setWaitingForSupport(true);
 		}
-	}
-	else
-	{
-		if (!this->isInDanger())
+		else
 		{
 			if (this->isEnemyVisible())
 			{
+				cout << "GoToSafePlace !soldier->isEnemyVisible()" << endl;
 				this->setCurrentState(new AttackEnemy());
-				this->getCurrentState()->onEnter(this);
+				this->pCurrentState->onEnter(this);
 			}
 			else
 			{
+				cout << "GoToSafePlace else !soldier->isEnemyVisible()" << endl;
 				this->setCurrentState(new SearchEnemy());
-				this->getCurrentState()->onEnter(this);
+				this->pCurrentState->onEnter(this);
 			}
-		}
-		else
-		{
-			this->setWaitingForSupport(true);
 		}
 	}
 }

@@ -4,12 +4,13 @@
 #include "Cell.h"
 #include "HealthStorage.h"
 #include "AmmoStorage.h"
-#include "GoToHealthStorage.h"
-#include "GoToAmmoStorage.h"
+#include "GoToStorage.h"
 
 class Support : public NPC
 {
 private:
+	static constexpr int MAX_HEALTH = 150;
+	static constexpr int MAX_AMMO = 300;
 	Soldier** soldiers;
 	HealthStorage* closestHealthStorage;
 	AmmoStorage* closestAmmoStorage;
@@ -18,7 +19,7 @@ private:
 
 public:
 	Support();
-	Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap);
+	Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap, NPC* leader);
 	~Support();
 
 	Soldier** getSoldiers() { return this->soldiers; }
@@ -33,7 +34,8 @@ public:
 	void takeAmmoFromStorage();
 	void goToClosestHealthStorage();
 	void goToClosestAmmoStorage();
-	void goToSafePlace();
+	void supplyToSoldier();
 	void show();
+	void goToSafePlace();
 };
 

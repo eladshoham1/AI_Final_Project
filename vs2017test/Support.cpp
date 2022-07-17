@@ -5,14 +5,14 @@ Support::Support()
 {
 }
 
-Support::Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap) : NPC(position, teamId, maze, securityMap)
+Support::Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap, NPC* leader) : NPC(position, teamId, maze, securityMap, leader)
 {
 	this->soldiers = soldiers;
 	this->closestHealthStorage = nullptr;
 	this->closestAmmoStorage = nullptr;
 	this->health = 0;
 	this->ammo = 0;
-	this->pCurrentState = new GoToHealthStorage();
+	this->pCurrentState = new GoToStorage();
 	this->pCurrentState->onEnter(this);
 }
 
@@ -28,6 +28,21 @@ Support::~Support()
 
 void Support::show()
 {
+}
+
+void Support::goToSafePlace()
+{
+	if (this->moveToSafestPosition())
+	{
+		for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
+		{
+			if (this->soldiers[i]->isWaitingForSupport())
+			{
+				this->setCurrentState(new SupplyToSoldier());
+				this->pCurrentState->onEnter(this);
+			}
+		}
+	}
 }
 
 void Support::setClosestHealthStorage(HealthStorage* closestHealthStorage)
@@ -46,7 +61,7 @@ void Support::bringHealthToSoldiers()
 	{
 		if (this->soldiers[i]->hpLack() > 0)
 		{
-			this->setTarget(this->soldiers[i]->getPosition(), static_cast<MapCell>(this->teamId));
+			this->setTarget(this->soldiers[i]->getPosition());
 			return;
 		}
 	}
@@ -54,35 +69,19 @@ void Support::bringHealthToSoldiers()
 
 void Support::takeHealthFromStorage()
 {
-	double amount = 0.0;
-	if (this->isAtTarget())
-	{
-		for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
-		{
-			amount += this->soldiers[i]->hpLack();
-		}
-		this->health += this->closestHealthStorage->supply((int)ceil(amount));
-	}
+	this->health += this->closestHealthStorage->supply(MAX_HEALTH - this->health);
 }
 
 void Support::takeAmmoFromStorage()
 {
-	double amount = 0.0;
-	if (this->isAtTarget())
-	{
-		for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
-		{
-			amount += this->soldiers[i]->ammoLack();
-		}
-		this->ammo += this->closestAmmoStorage->supply((int)ceil(amount));
-	}
+	this->ammo += this->closestAmmoStorage->supply(MAX_AMMO - ammo);
 }
 
 void Support::goToClosestHealthStorage()
 {
 	if (this->closestHealthStorage != nullptr)
 	{
-		this->setTarget(this->closestHealthStorage->getPosition(), HEALTH);
+		this->setTarget(this->closestHealthStorage->getPosition());
 	}
 }
 
@@ -90,10 +89,37 @@ void Support::goToClosestAmmoStorage()
 {
 	if (this->closestAmmoStorage != nullptr)
 	{
-		this->setTarget(this->closestAmmoStorage->getPosition(), AMMO);
+		this->setTarget(this->closestAmmoStorage->getPosition());
 	}
 }
 
-void Support::goToSafePlace()
+void Support::supplyToSoldier()
 {
+	for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
+	{
+		if (this->soldiers[i]->isWaitingForSupport())
+		{
+			if (this->health > 25 && this->soldiers[i]->getHP() < 50)
+			{
+				if (this->target == this->soldiers[i]->getPosition())
+				{
+					this->soldiers[i]->supplyHP(this->health); // change health
+				}
+				this->setTarget(this->soldiers[i]->getPosition());
+			}
+			else if (this->ammo > 40 && this->soldiers[i]->getLoadedBullets() < 60)
+			{
+				if (this->target == this->soldiers[i]->getPosition())
+				{
+					this->soldiers[i]->supplyBullets(this->ammo); // change ammo
+				}
+				this->setTarget(this->soldiers[i]->getPosition());
+			}
+			else
+			{
+				this->setCurrentState(new GoToStorage());
+				this->pCurrentState->onEnter(this);
+			}
+		}
+	}
 }
