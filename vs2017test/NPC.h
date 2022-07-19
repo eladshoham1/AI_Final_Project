@@ -26,7 +26,6 @@ protected:
 	int** maze;
 	double** securityMap;
 	double** visibilityMap;
-	NPC* leader;
 	NPC* closestEnemy;
 	vector<NPC*> enemies;
 
@@ -35,7 +34,7 @@ protected:
 
 public:
 	NPC();
-	NPC(const Point& position, int teamId, int** maze, double** securityMap, NPC* leader);
+	NPC(const Point& position, int teamId, int** maze, double** securityMap);
 	virtual ~NPC();
 
 	Point getPosition() { return this->position; }
@@ -48,8 +47,6 @@ public:
 	void setInterruptedState(State* ps) { this->pInterruptedState = ps; }
 	double getHP() const { return this->hp; }
 	int getTeamId() { return this->teamId; }
-	NPC* getLeader() const { return this->leader; }
-	void setLeader(NPC* leader) { this->leader = leader; }
 	NPC* getClosestEnemy() const { return this->closestEnemy; }
 	void setClosestEnemy(NPC* closestEnemy) { this->closestEnemy = closestEnemy; }
 	vector<NPC*> getEnemies() const { return this->enemies; }
@@ -57,6 +54,7 @@ public:
 	double hpLack() const { return MAX_HP - this->hp; }
 	bool getIsMoving() const { return this->isMoving; }
 	void setIsMoving(bool isMoving) { this->isMoving = isMoving; }
+	void setVisibilityMapToZero();
 	void supplyHP(int hp);
 	void setAsDead();
 	bool isDead() { return this->dead; }

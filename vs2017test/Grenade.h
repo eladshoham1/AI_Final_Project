@@ -18,7 +18,7 @@ public:
 
 	bool getIsExploded() { return this->isExploded; }
 	void explode();
-	void exploding(int** maze);
+	Point* exploding(int** maze);
 	void show();
 	void simulateExplosion(int** maze, double** securityMap, double damage);
 	void simulateVisibility(int** maze, double** visibilityMap);

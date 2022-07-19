@@ -7,17 +7,18 @@
 class Bullet : public Ammo
 {
 private:
-	static constexpr float SPEED = 0.1f;
+	static constexpr float SPEED = 0.2f;
 	Point shootingPosition;
 	double directionAngle;
 	bool isMoving;
 
 public:
 	Bullet();
-	Bullet(double x, double y, const Point& shootingPosition, double directionAngle);
+	Bullet(const Point& shootingPosition, double x, double y, double directionAngle);
 	~Bullet();
 
 	Point getShootingPosition() const { return this->shootingPosition; }
+	void setShootingPosition(const Point& shootingPosition) { this->shootingPosition = shootingPosition; }
 	void show();
 	void fire() { isMoving = true; }
 	Point* move(int** maze);

@@ -82,8 +82,8 @@ void Map::setupRooms()
 	{
 		do
 		{
-			width = 8 + rand() % 25;
-			height = 8 + rand() % 25;
+			width = 13 + rand() % 17;
+			height = 13 + rand() % 17;
 			x = 2 + width / 2 + rand() % (MSZ - 4 - width);
 			y = 2 + height / 2 + rand() % (MSZ - 4 - height);
 		} while (hasOverlap(width, height, x, y, i));
@@ -110,7 +110,7 @@ void Map::saveMapToFile(const char* fileName)
 //         2: if  F of the new found neghbor IS better (<) then we have to update the cell parameters!!!
 void Map::checkNeighbor(int row, int col, Cell* pcurrent, priority_queue <Cell, vector<Cell>, CompareCells>&pq, vector<Cell> &grays, vector<Cell> &blacks)
 {
-	double cost, cheap = 0.1, expensive = 0.8;
+	double cost, cheap = 0.1, expensive = 0.4;
 	vector <Cell>::iterator itrb;
 	vector <Cell>::iterator itrg;
 
@@ -315,7 +315,7 @@ void Map::findClosestHealthStorage(Support* support)
 			if (closestHealthStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getHealthStorages()[j]->getPosition()) <
 				support->getPosition().euclideanDistance(closestHealthStorage->getPosition()))
 			{
-				if (!this->rooms[i]->getHealthStorages()[j]->isEmpty())
+				if (this->rooms[i]->getHealthStorages()[j] && !this->rooms[i]->getHealthStorages()[j]->isEmpty())
 				{
 					closestHealthStorage = this->rooms[i]->getHealthStorages()[j];
 				}
@@ -335,7 +335,7 @@ void Map::findClosestAmmoStorage(Support* support)
 			if (closestAmmoStorage == nullptr || support->getPosition().euclideanDistance(this->rooms[i]->getAmmoStorages()[j]->getPosition()) <
 				support->getPosition().euclideanDistance(closestAmmoStorage->getPosition()))
 			{
-				if (!this->rooms[i]->getAmmoStorages()[j]->isEmpty())
+				if (this->rooms[i]->getAmmoStorages()[j] && !this->rooms[i]->getAmmoStorages()[j]->isEmpty())
 				{
 					closestAmmoStorage = this->rooms[i]->getAmmoStorages()[j];
 				}
@@ -421,7 +421,7 @@ bool Map::play()
 				HealthStorage** healthStorages = this->rooms[j]->getHealthStorages();
 				for (int k = 0; k < Room::NUM_OF_HEALTH_STORAGE; k++)
 				{
-					if (healthStorages[k]->isEmpty())
+					if (healthStorages[k] && healthStorages[k]->isEmpty())
 					{
 						this->maze[healthStorages[k]->getPosition().getX()][healthStorages[k]->getPosition().getY()] = OBSTACLE;
 					}
@@ -429,7 +429,7 @@ bool Map::play()
 				AmmoStorage** ammoStorages = this->rooms[j]->getAmmoStorages();
 				for (int k = 0; k < Room::NUM_OF_AMMO_STORAGE; k++)
 				{
-					if (ammoStorages[k]->isEmpty())
+					if (ammoStorages[k] && ammoStorages[k]->isEmpty())
 					{
 						this->maze[ammoStorages[k]->getPosition().getX()][ammoStorages[k]->getPosition().getY()] = OBSTACLE;
 					}

@@ -126,7 +126,6 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CompareCells.cpp" />
-    <ClCompile Include="FillAmmo.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GoToStorage.cpp" />
     <ClCompile Include="GoToSafePlace.cpp" />
@@ -138,7 +137,6 @@
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="ReloadBullets.cpp" />
-    <ClCompile Include="Rest.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="Storage.cpp" />
@@ -155,7 +153,6 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CompareCells.h" />
     <ClInclude Include="Definitions.h" />
-    <ClInclude Include="FillAmmo.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="glut.h" />
     <ClInclude Include="GoToStorage.h" />
@@ -167,7 +164,6 @@
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="ReloadBullets.h" />
-    <ClInclude Include="Rest.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Soldier.h" />
     <ClInclude Include="State.h" />

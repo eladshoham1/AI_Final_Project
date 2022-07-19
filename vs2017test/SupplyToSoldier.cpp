@@ -14,8 +14,10 @@ void SupplyToSoldier::transform(NPC* pn)
 	Support *support = dynamic_cast<Support*>(pn);
 	if (support)
 	{
+		//cout << "in SupplyToSoldier" << endl;
 		if (support->scanAreaForEnemyGrenades())
 		{
+			//cout << "support->scanAreaForEnemyGrenades()" << endl;
 			support->setCurrentState(new GoToSafePlace());
 			support->getCurrentState()->onEnter(support);
 		}

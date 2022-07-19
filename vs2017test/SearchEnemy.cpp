@@ -15,32 +15,24 @@ void SearchEnemy::transform(NPC* pn)
 	Soldier *soldier = dynamic_cast<Soldier*>(pn);
 	if (soldier)
 	{
-		cout << soldier->getHP() << " " << soldier->getLoadedBullets() << endl;
 		if (soldier->scanAreaForEnemyGrenades() || soldier->getLoadedBullets() == 0)
 		{
-			cout << "3333" << endl;
 			soldier->setCurrentState(new GoToSafePlace());
 			soldier->getCurrentState()->onEnter(soldier);
 		}
-		else if (soldier->getHP() > 50 && soldier->getLoadedBullets() > 30)
-		{
-			cout << "4444" << endl;
-			soldier->setCurrentState(new AttackEnemy());
-			soldier->getCurrentState()->onEnter(soldier);
+		else if (soldier->isEnemyVisible())
+		{ 
+			if (soldier->getHP() > NPC::MAX_HP / 2.0 && soldier->hasLoadedBullets())
+			{
+				soldier->setCurrentState(new AttackEnemy());
+				soldier->getCurrentState()->onEnter(soldier);
+			}
 		}
 		else
 		{
-			if (soldier->getLeader())
+			if (soldier->getClosestEnemy() != nullptr)
 			{
-				soldier->followLeader();
-			}
-			else
-			{
-				NPC* closestEnemy = soldier->getClosestEnemy();
-				if (closestEnemy != nullptr)
-				{
-					soldier->setTarget(closestEnemy->getPosition());
-				}
+				soldier->setTarget(soldier->getClosestEnemy()->getPosition());
 			}
 		}
 	}

@@ -5,7 +5,7 @@ NPC::NPC()
 {
 }
 
-NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap, NPC* leader)
+NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap)
 {
 	this->setPosition(position);
 	this->pCurrentState = nullptr;
@@ -15,7 +15,6 @@ NPC::NPC(const Point& position, int teamId, int** maze, double** securityMap, NP
 	this->dead = false;
 	this->maze = maze;
 	this->securityMap = securityMap;
-	this->leader = leader;
 	this->enemies = enemies;
 	this->visibilityMap = new double*[MSZ];
 	for (int i = 0; i < MSZ; i++)
@@ -106,6 +105,19 @@ void NPC::checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, v
 					tmp.pop_back();
 				}
 			}
+		}
+	}
+}
+
+void NPC::setVisibilityMapToZero()
+{
+	int i, j;
+
+	for (i = 0; i < MSZ; i++)
+	{
+		for (j = 0; j < MSZ; j++)
+		{
+			this->visibilityMap[i][j] = 0;
 		}
 	}
 }
@@ -205,7 +217,6 @@ void NPC::goToTarget()
 				Cell* memory;
 				while (pCurrent->getParent() != nullptr)
 				{
-
 					if (pCurrent->getParent()->getParent() == nullptr) // next step
 					{
 						this->maze[pCurrent->getParent()->getRow()][pCurrent->getParent()->getCol()] = SPACE;
@@ -242,14 +253,6 @@ void NPC::goToTarget()
 	}
 }
 
-void NPC::followLeader()
-{
-	if (this->leader != nullptr)
-	{
-		this->setTarget(this->leader->getPosition());
-	}
-}
-
 bool NPC::moveToSafestPosition()
 {
 	Point safestPoisition;
@@ -261,9 +264,9 @@ bool NPC::moveToSafestPosition()
 	playerRow = this->position.getX();
 	playerCol = this->position.getY();
 
-	for (int r = this->position.getX() - 11 / 2; r <= this->position.getX()+ 11 / 2; r++)
+	for (int r = this->position.getX() - 15 / 2; r <= this->position.getX() + 15 / 2; r++)
 	{
-		for (int c = this->position.getY() - 11 / 2; c <= this->position.getY() + 11 / 2; c++)
+		for (int c = this->position.getY() - 15 / 2; c <= this->position.getY() + 15 / 2; c++)
 		{
 			if (r >= 0 && r < MSZ && c >= 0 && c < MSZ)
 			{
@@ -337,6 +340,7 @@ bool NPC::scanAreaForEnemyGrenades() const
 
 void NPC::play()
 {
+	//cout << typeid(*this).name() << " State: " << typeid(*this->pCurrentState).name() << endl;
 	this->pCurrentState->transform(this);
 	if (this->isMoving)
 	{

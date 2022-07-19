@@ -18,7 +18,6 @@ void GoToStorage::transform(NPC* pn)
 		{
 			if (support->isAtTarget())
 			{
-				cout << "SupplyToSoldier1" << endl;
 				support->takeHealthFromStorage();
 				pn->setCurrentState(new SupplyToSoldier());
 			}
@@ -26,17 +25,14 @@ void GoToStorage::transform(NPC* pn)
 			{
 				if (support->getHealth() < 25)
 				{
-					cout << "goToClosestHealthStorage" << endl;
 					support->goToClosestHealthStorage();
 				}
 				else if (support->getAmmo() < 40)
 				{
-					cout << "goToClosestAmmoStorage" << endl;
 					support->goToClosestAmmoStorage();
 				}
 				else
 				{
-					cout << "SupplyToSoldier2" << endl;
 					support->takeHealthFromStorage();
 					pn->setCurrentState(new SupplyToSoldier());
 				}
@@ -44,7 +40,6 @@ void GoToStorage::transform(NPC* pn)
 		}
 		else
 		{
-			cout << "Support GoToSafePlace" << endl;
 			pn->setCurrentState(new GoToSafePlace());
 			pn->getCurrentState()->onEnter(pn);
 		}

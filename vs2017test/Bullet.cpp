@@ -5,9 +5,9 @@ Bullet::Bullet()
 }
 
 // angle must be in radians
-Bullet::Bullet(double x, double y, const Point& shootingPosition, double directionAngle) : Ammo(x, y)
+Bullet::Bullet(const Point& shootingPosition, double x, double y, double directionAngle) : Ammo(x, y)
 {
-	this->shootingPosition = shootingPosition;
+	this->setShootingPosition(shootingPosition);
 	this->directionAngle = directionAngle;
 	this->isMoving = false;
 }
@@ -45,6 +45,7 @@ Point* Bullet::move(int** maze)
 		{
 			this->isMoving = false;
 			point = new Point((int)this->y, (int)this->x);
+			cout << "bullet move row: " << point->getX() << " col: " << point->getY() << endl;
 		}
 	}
 	return point;

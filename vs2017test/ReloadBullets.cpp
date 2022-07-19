@@ -14,34 +14,40 @@ void ReloadBullets::transform(NPC* pn)
 	Soldier *soldier = dynamic_cast<Soldier*>(pn);
 	if (soldier)
 	{
-		if (soldier->hasBulletsInStock())
+		if (soldier->needToReloadBullets())
 		{
-			//cout << "soldier->loadBullets();" << endl;
-			soldier->loadBullets();
-			//cout << "loadBullets: " << soldier->getLoadedBullets() << endl;
-		}
-		else
-		{
-			soldier->setWaitingForSupport(true);
-			//cout << "soldier->setWaitingForSupport(true);" << endl;
-			/*if (!soldier->isInDanger() && soldier->hasLoadedBullets())
+			if (soldier->hasBulletsInStock())
 			{
-				if (soldier->isEnemyVisible())
-				{
-					soldier->setCurrentState(new AttackEnemy());
-					soldier->getCurrentState()->onEnter(soldier);
-				}
-				else
-				{
-					soldier->setCurrentState(new SearchEnemy());
-					soldier->getCurrentState()->onEnter(soldier);
-				}
+				soldier->loadBullets();
 			}
 			else
 			{
-				soldier->setCurrentState(new GoToSafePlace());
+				if (soldier->hasSupporterAlive())
+				{
+					soldier->setWaitingForSupport(true);
+				}
+				else
+				{
+					if (soldier->scanAreaForEnemyGrenades())
+					{
+						soldier->setCurrentState(new GoToSafePlace());
+						soldier->getCurrentState()->onEnter(soldier);
+					}
+				}
+			}
+		}
+		else
+		{
+			if (soldier->isEnemyVisible())
+			{
+				soldier->setCurrentState(new AttackEnemy());
 				soldier->getCurrentState()->onEnter(soldier);
-			}*/
+			}
+			else
+			{
+				soldier->setCurrentState(new SearchEnemy());
+				soldier->getCurrentState()->onEnter(soldier);
+			}
 		}
 	}
 }

@@ -5,7 +5,7 @@ Support::Support()
 {
 }
 
-Support::Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap, NPC* leader) : NPC(position, teamId, maze, securityMap, leader)
+Support::Support(const Point& position, Soldier** soldiers, int teamId, int** maze, double** securityMap) : NPC(position, teamId, maze, securityMap)
 {
 	this->soldiers = soldiers;
 	this->closestHealthStorage = nullptr;
