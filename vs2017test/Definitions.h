@@ -4,6 +4,5 @@ enum MapCell { WALL, SPACE, OBSTACLE, AMMO, HEALTH, SOLDIER_TEAM_ONE, SUPPORT_TE
 
 const int WINDOW_WIDTH = 700;
 const int WINDOW_HEIGHT = 700;
-const int DELAY = 100;
 const int MSZ = 100;
 const double PI = 3.141592653589793238463;

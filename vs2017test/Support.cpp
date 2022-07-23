@@ -30,21 +30,6 @@ void Support::show()
 {
 }
 
-void Support::goToSafePlace()
-{
-	if (this->moveToSafestPosition())
-	{
-		for (int i = 0; i < Team::NUM_OF_SOLDIERS; i++)
-		{
-			if (this->soldiers[i]->isWaitingForSupport())
-			{
-				this->setCurrentState(new SupplyToSoldier());
-				this->pCurrentState->onEnter(this);
-			}
-		}
-	}
-}
-
 void Support::setClosestHealthStorage(HealthStorage* closestHealthStorage)
 {
 	this->closestHealthStorage = closestHealthStorage;
@@ -69,12 +54,18 @@ void Support::bringHealthToSoldiers()
 
 void Support::takeHealthFromStorage()
 {
-	this->health += this->closestHealthStorage->supply(MAX_HEALTH - this->health);
+	if (this->closestHealthStorage != nullptr)
+	{
+		this->health += this->closestHealthStorage->supply(MAX_HEALTH - this->health);
+	}
 }
 
 void Support::takeAmmoFromStorage()
 {
-	this->ammo += this->closestAmmoStorage->supply(MAX_AMMO - ammo);
+	if (this->closestAmmoStorage != nullptr)
+	{
+		this->ammo += this->closestAmmoStorage->supply(MAX_AMMO - ammo);
+	}
 }
 
 void Support::goToClosestHealthStorage()

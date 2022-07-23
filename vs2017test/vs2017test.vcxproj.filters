@@ -78,9 +78,6 @@
     <ClCompile Include="ReloadBullets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dead.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GoToStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -156,9 +153,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReloadBullets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GoToStorage.h">

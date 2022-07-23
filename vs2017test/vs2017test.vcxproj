@@ -121,7 +121,6 @@
     <ClCompile Include="Ammo.cpp" />
     <ClCompile Include="AmmoStorage.cpp" />
     <ClCompile Include="AttackEnemy.cpp" />
-    <ClCompile Include="Dead.cpp" />
     <ClCompile Include="SearchEnemy.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cell.cpp" />
@@ -147,7 +146,6 @@
     <ClInclude Include="Ammo.h" />
     <ClInclude Include="AmmoStorage.h" />
     <ClInclude Include="AttackEnemy.h" />
-    <ClInclude Include="Dead.h" />
     <ClInclude Include="SearchEnemy.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Cell.h" />

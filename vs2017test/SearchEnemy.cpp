@@ -16,23 +16,20 @@ void SearchEnemy::transform(NPC* pn)
 	if (soldier)
 	{
 		if (soldier->scanAreaForEnemyGrenades() || soldier->getLoadedBullets() == 0)
-		{
 			soldier->setCurrentState(new GoToSafePlace());
-			soldier->getCurrentState()->onEnter(soldier);
-		}
 		else if (soldier->isEnemyVisible())
-		{ 
-			if (soldier->getHP() > NPC::MAX_HP / 2.0 && soldier->hasLoadedBullets())
+		{
+			if (!soldier->hpLastThanHalf() && soldier->hasLoadedBullets())
 			{
 				soldier->setCurrentState(new AttackEnemy());
-				soldier->getCurrentState()->onEnter(soldier);
 			}
 		}
 		else
 		{
-			if (soldier->getClosestEnemy() != nullptr)
+			NPC* enemy = soldier->findEnemy();
+			if (enemy)
 			{
-				soldier->setTarget(soldier->getClosestEnemy()->getPosition());
+				soldier->setTarget(enemy->getPosition());
 			}
 		}
 	}

@@ -282,7 +282,7 @@ void Map::createSecurityMap()
 	}
 }
 
-void Map::findClosestEnemy(NPC* npc)
+/*void Map::findClosestEnemy(NPC* npc)
 {
 	NPC* closestEnemy = nullptr;
 	for (int i = 0; i < NUM_OF_TEAMS; i++)
@@ -303,7 +303,7 @@ void Map::findClosestEnemy(NPC* npc)
 		}
 	}
 	npc->setClosestEnemy(closestEnemy);
-}
+}*/
 
 void Map::findClosestHealthStorage(Support* support)
 {
@@ -407,11 +407,6 @@ bool Map::play()
 			if (i == this->teamTurn)
 			{
 				this->teams[i]->play(this->maze);
-				for (int j = 0; j < Team::NUM_OF_SOLDIERS; j++)
-				{
-					this->findClosestEnemy(this->teams[i]->getSoldiers()[j]);
-				}
-				this->findClosestEnemy(this->teams[i]->getSupport());
 				this->findClosestHealthStorage(this->teams[i]->getSupport());
 				this->findClosestAmmoStorage(this->teams[i]->getSupport());
 				this->nextTurn();

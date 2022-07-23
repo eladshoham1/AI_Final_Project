@@ -41,7 +41,7 @@ void GoToStorage::transform(NPC* pn)
 		else
 		{
 			pn->setCurrentState(new GoToSafePlace());
-			pn->getCurrentState()->onEnter(pn);
+			//pn->getCurrentState()->onEnter(pn);
 		}
 	}
 }

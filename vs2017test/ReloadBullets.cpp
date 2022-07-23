@@ -31,7 +31,7 @@ void ReloadBullets::transform(NPC* pn)
 					if (soldier->scanAreaForEnemyGrenades())
 					{
 						soldier->setCurrentState(new GoToSafePlace());
-						soldier->getCurrentState()->onEnter(soldier);
+						//soldier->getCurrentState()->onEnter(soldier);
 					}
 				}
 			}
@@ -41,12 +41,12 @@ void ReloadBullets::transform(NPC* pn)
 			if (soldier->isEnemyVisible())
 			{
 				soldier->setCurrentState(new AttackEnemy());
-				soldier->getCurrentState()->onEnter(soldier);
+				//soldier->getCurrentState()->onEnter(soldier);
 			}
 			else
 			{
 				soldier->setCurrentState(new SearchEnemy());
-				soldier->getCurrentState()->onEnter(soldier);
+				//soldier->getCurrentState()->onEnter(soldier);
 			}
 		}
 	}

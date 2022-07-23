@@ -18,7 +18,6 @@ protected:
 	Point position;
 	Point target;
 	State* pCurrentState;
-	State* pInterruptedState;
 	int teamId;
 	bool isMoving;
 	double hp;
@@ -26,7 +25,6 @@ protected:
 	int** maze;
 	double** securityMap;
 	double** visibilityMap;
-	NPC* closestEnemy;
 	vector<NPC*> enemies;
 
 	void insertToGrays(vector<Cell*>& grays, Cell* pCell);
@@ -42,18 +40,16 @@ public:
 	Point getTarget() { return this->target; }
 	void setTarget(const Point& target);
 	State* getCurrentState() const { return this->pCurrentState; }
-	void setCurrentState(State* ps) { this->pCurrentState = ps; }
-	State* getInterruptedState() const { return this->pInterruptedState; }
-	void setInterruptedState(State* ps) { this->pInterruptedState = ps; }
+	void setCurrentState(State* pCurrentState);
 	double getHP() const { return this->hp; }
 	int getTeamId() { return this->teamId; }
-	NPC* getClosestEnemy() const { return this->closestEnemy; }
-	void setClosestEnemy(NPC* closestEnemy) { this->closestEnemy = closestEnemy; }
 	vector<NPC*> getEnemies() const { return this->enemies; }
 	void setEnemies(const vector<NPC*>& enemies) { this->enemies = enemies; }
 	double hpLack() const { return MAX_HP - this->hp; }
+	bool hpLastThanHalf() { return this->hp < MAX_HP / 2.0; }
 	bool getIsMoving() const { return this->isMoving; }
 	void setIsMoving(bool isMoving) { this->isMoving = isMoving; }
+	NPC* findEnemy();
 	void setVisibilityMapToZero();
 	void supplyHP(int hp);
 	void setAsDead();
@@ -63,10 +59,8 @@ public:
 	bool isAtTarget();
 	void hit(double damage);
 	void goToTarget();
-	void followLeader();
-	bool moveToSafestPosition();
+	bool goToSafePosition();
 	bool scanAreaForEnemyGrenades() const;
 	void play();
-	virtual void goToSafePlace() = 0;
 	virtual void show() = 0;
 };

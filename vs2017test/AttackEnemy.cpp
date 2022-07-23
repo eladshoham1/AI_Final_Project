@@ -14,7 +14,7 @@ void AttackEnemy::transform(NPC* pn)
 	Soldier *soldier = dynamic_cast<Soldier*>(pn);
 	if (soldier)
 	{
-		if (soldier->isInDanger() || !soldier->hasLoadedBullets())
+		/*if (soldier->isInDanger() || !soldier->hasLoadedBullets())
 		{
 			soldier->setCurrentState(new GoToSafePlace());
 			soldier->getCurrentState()->onEnter(soldier);
@@ -25,18 +25,19 @@ void AttackEnemy::transform(NPC* pn)
 			soldier->getCurrentState()->onEnter(soldier);
 		}
 		else
-		{
+		{*/
 			soldier->attack();
-		}
+		//}
 	}
 }
 
 void AttackEnemy::onEnter(NPC* pn)
 {
+	cout << "in AttackEnemy" << endl;
 	Soldier *soldier = dynamic_cast<Soldier*>(pn);
 	if (soldier)
 	{
-		soldier->setIsMoving(false);
+		//soldier->setIsMoving(false);
 	}
 }
 

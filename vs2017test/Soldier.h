@@ -41,8 +41,7 @@ public:
 	void addBulletsToStock(int numOfBullets);
 	bool isEnemyVisible();
 	void attack();
-	bool shoot();
-	bool throwGrenade();
-	void goToSafePlace();
+	bool shoot(NPC* enemy);
+	bool throwGrenade(NPC* enemy);
 	void show();
 };

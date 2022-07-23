@@ -45,7 +45,6 @@ Point* Bullet::move(int** maze)
 		{
 			this->isMoving = false;
 			point = new Point((int)this->y, (int)this->x);
-			cout << "bullet move row: " << point->getX() << " col: " << point->getY() << endl;
 		}
 	}
 	return point;
@@ -79,10 +78,11 @@ void Bullet::simulateVisibility(int** maze, double** visibilityMap)
 	{
 		this->x += dx * SPEED;
 		this->y += dy * SPEED;
-
+		//cout << "x1: " << shootingPosition.getX() << " y1: " << shootingPosition.getY() << " x2: " << (int)x << " y2: " << (int)y << endl;
 		visibilityMap[(int)y][(int)x] = 1; // drawing in map
 
 		if (maze[(int)y][(int)x] != SPACE)
 			this->isMoving = false;
 	}
+	//cout << "_________________________________________________________" << endl;
 }

@@ -33,6 +33,17 @@ void NPC::setTarget(const Point& target)
 	this->target = target;
 }
 
+void NPC::setCurrentState(State * pCurrentState)
+{
+	if (this->pCurrentState != nullptr)
+	{
+		this->pCurrentState->onExit(this);
+		delete this->pCurrentState;
+	}
+	this->pCurrentState = pCurrentState;
+	this->pCurrentState->onEnter(this);
+}
+
 void NPC::insertToGrays(vector<Cell*>& grays, Cell* pCell)
 {
 	int index = 0;
@@ -109,6 +120,21 @@ void NPC::checkNeighbor(priority_queue <Cell, vector<Cell>, CompareCells>& pq, v
 	}
 }
 
+NPC* NPC::findEnemy()
+{
+	vector<NPC*>::const_iterator itr = this->enemies.begin();
+	vector<NPC*>::const_iterator itrEnd = this->enemies.end();
+	NPC* enemy = nullptr;
+
+	for (; itr != itrEnd; ++itr)
+	{
+		if (enemy == nullptr || this->position.euclideanDistance((*itr)->getPosition()) < this->position.euclideanDistance(enemy->getPosition()))
+			enemy = *itr;
+	}
+
+	return enemy;
+}
+
 void NPC::setVisibilityMapToZero()
 {
 	int i, j;
@@ -142,23 +168,21 @@ void NPC::setAsDead()
 
 double NPC::distanceFromEnemy()
 {
-	if (this->closestEnemy != nullptr)
+	NPC* enemy = this->findEnemy();
+	if (enemy)
 	{
-		return this->position.euclideanDistance(this->closestEnemy->getPosition());
+		return this->position.euclideanDistance(enemy->getPosition());
 	}
 	return 0.0;
 }
 
 bool NPC::isInDanger()
 {
-	if (this->closestEnemy != nullptr)
+	if (this->distanceFromEnemy() < 10.0)
 	{
-		if (this->distanceFromEnemy() < 10)
+		if (dynamic_cast<Support*>(this) || this->hpLastThanHalf())
 		{
-			if (dynamic_cast<Support*>(this) || this->hp < MAX_HP / 2.0)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	return false;
@@ -171,7 +195,7 @@ bool NPC::isAtTarget()
 
 void NPC::hit(double damage)
 {
-	if (damage > this->hp)
+	if (damage < this->hp)
 	{
 		this->hp -= damage;
 	}
@@ -183,6 +207,11 @@ void NPC::hit(double damage)
 
 void NPC::goToTarget()
 {
+	if (!this->isMoving || this->isAtTarget())
+	{
+		return;
+	}
+
 	int row, col;
 	vector<Cell> grays, blacks;
 	priority_queue<Cell, vector<Cell>, CompareCells> pq;
@@ -253,7 +282,7 @@ void NPC::goToTarget()
 	}
 }
 
-bool NPC::moveToSafestPosition()
+bool NPC::goToSafePosition()
 {
 	Point safestPoisition;
 	double minValue;
@@ -289,11 +318,8 @@ bool NPC::moveToSafestPosition()
 	}
 	if (foundFirst)
 	{
-		//cout << "foundFirst" << endl;
-		//cout << this->target.euclideanDistance(row, col) << endl;
 		if (this->target.euclideanDistance(row, col) == 0)
 		{
-			//cout << "return true" << endl;
 			return true;
 		}
 		else
@@ -325,7 +351,7 @@ bool NPC::scanAreaForEnemyGrenades() const
 				{
 					if (row >= 0 && row < MSZ && col >= 0 && col < MSZ)
 					{
-						if ((int)grenade->getY() == row && (int)grenade->getX() == col /*&& !grenade->getIsDetonated()*/)
+						if ((int)grenade->getY() == row && (int)grenade->getX() == col)
 						{
 							return true;
 						}
@@ -334,13 +360,12 @@ bool NPC::scanAreaForEnemyGrenades() const
 			}
 		}
 	}
-
 	return false;
 }
 
 void NPC::play()
 {
-	//cout << typeid(*this).name() << " State: " << typeid(*this->pCurrentState).name() << endl;
+	//cout << typeid(*this).name() + 6 << " (" << typeid(*this->pCurrentState).name() + 6 << ")" << endl;
 	this->pCurrentState->transform(this);
 	if (this->isMoving)
 	{

@@ -36,6 +36,5 @@ public:
 	void goToClosestAmmoStorage();
 	void supplyToSoldier();
 	void show();
-	void goToSafePlace();
 };
 

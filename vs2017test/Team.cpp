@@ -48,13 +48,12 @@ bool Team::theyAllDeads()
 			return false;
 		}
 	}
-
-	return this->support->isDead();
+	return true;
 }
 
 void Team::play(int** maze)
 {
-	int i, j;
+	int i;
 	for (i = 0; i < NUM_OF_SOLDIERS; i++)
 	{
 		if (i == this->npcTurn)
@@ -64,25 +63,6 @@ void Team::play(int** maze)
 				this->soldiers[i]->setSupporterAlive(false);
 			}
 			this->soldiers[i]->play();
-			/*if (this->enemyTeam)
-			{
-				if (this->soldiers[i]->getPBullet())
-				{
-					Point* point = this->soldiers[i]->getPBullet()->move(maze);
-					if (point)
-					{
-						for (j = 0; j < NUM_OF_SOLDIERS; j++)
-						{
-							if (*point == this->enemyTeam->getSoldiers()[j]->getPosition())
-							{
-								Point shootingPosition = this->soldiers[i]->getPBullet()->getShootingPosition();
-								double distance = point->euclideanDistance(shootingPosition);
-								this->enemyTeam->getSoldiers()[j]->hit(rand() % 10 + distance);
-							}
-						}
-					}
-				}
-			}*/
 		}
 	}
 	if (i == this->npcTurn)
