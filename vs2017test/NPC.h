@@ -13,6 +13,7 @@ class NPC
 {
 public:
 	static constexpr double MAX_HP = 100.0;
+	static constexpr int NUM_OF_STATES = 3;
 
 protected:
 	Point position;
@@ -51,16 +52,18 @@ public:
 	void setIsMoving(bool isMoving) { this->isMoving = isMoving; }
 	NPC* findEnemy();
 	void setVisibilityMapToZero();
-	void supplyHP(int hp);
+	double supplyHP(int hp);
 	void setAsDead();
 	bool isDead() { return this->dead; }
 	double distanceFromEnemy();
 	bool isInDanger();
 	bool isAtTarget();
+	bool isUnderAttack();
 	void hit(double damage);
 	void goToTarget();
 	bool goToSafePosition();
 	bool scanAreaForEnemyGrenades() const;
 	void play();
+	virtual void setRandomBehavior() = 0;
 	virtual void show() = 0;
 };

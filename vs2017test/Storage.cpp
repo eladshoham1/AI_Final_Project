@@ -16,7 +16,7 @@ int Storage::supply(int amount)
 
 	if (!this->isEmpty())
 	{
-		if (amount > this->amount)
+		if (amount < this->amount)
 		{
 			availableAmount = amount;
 			this->amount -= amount;

@@ -34,7 +34,9 @@ public:
 	bool isWaitingForSupport() { return this->waitingForSupport; }
 	void setWaitingForSupport(bool waitingForSupport) { this->waitingForSupport = waitingForSupport; }
 	int ammoLack() { return MAX_BULLETS - this->bulletsInStock; }
+	bool ammoLastThanHalf() { return this->bulletsInStock < MAX_BULLETS / 2; }
 	bool needToReloadBullets() { return this->loadedBullets == 0; }
+	void setRandomBehavior();
 	void supplyBullets(int bullets);
 	void setVisibilityMap();
 	void loadBullets();

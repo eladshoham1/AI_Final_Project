@@ -17,37 +17,24 @@ void ReloadBullets::transform(NPC* pn)
 		if (soldier->needToReloadBullets())
 		{
 			if (soldier->hasBulletsInStock())
-			{
 				soldier->loadBullets();
-			}
 			else
 			{
 				if (soldier->hasSupporterAlive())
-				{
 					soldier->setWaitingForSupport(true);
-				}
 				else
 				{
 					if (soldier->scanAreaForEnemyGrenades())
-					{
 						soldier->setCurrentState(new GoToSafePlace());
-						//soldier->getCurrentState()->onEnter(soldier);
-					}
 				}
 			}
 		}
 		else
 		{
-			if (soldier->isEnemyVisible())
-			{
+			if (soldier->isEnemyVisible() || soldier->isUnderAttack())
 				soldier->setCurrentState(new AttackEnemy());
-				//soldier->getCurrentState()->onEnter(soldier);
-			}
 			else
-			{
 				soldier->setCurrentState(new SearchEnemy());
-				//soldier->getCurrentState()->onEnter(soldier);
-			}
 		}
 	}
 }

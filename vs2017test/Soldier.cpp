@@ -6,14 +6,13 @@ Soldier::Soldier()
 
 Soldier::Soldier(const Point& position, int teamId, int** maze, double** securityMap) : NPC(position, teamId, maze, securityMap)
 {
-	this->pCurrentState = new SearchEnemy();
-	this->pCurrentState->onEnter(this);
 	this->pBullet = nullptr;
 	this->pGrenade = nullptr;
 	this->loadedBullets = MAX_BULLETS;
 	this->bulletsInStock = MAX_BULLETS;
 	this->setSupporterAlive(true);
 	this->setWaitingForSupport(false);
+	this->setRandomBehavior();
 }
 
 Soldier::~Soldier()
@@ -24,11 +23,33 @@ void Soldier::show()
 {
 	if (this->pBullet != nullptr)
 	{
+		//cout << "show pBullet" << endl;
 		this->pBullet->show();
 	}
 	if (this->pGrenade != nullptr)
 	{
+		//cout << "show pGrenade" << endl;
 		this->pGrenade->show();
+	}
+}
+
+void Soldier::setRandomBehavior()
+{
+	int choose = rand() % (NUM_OF_STATES + 1);
+	switch (choose)
+	{
+	case 0:
+		this->setCurrentState(new GoToSafePlace());
+		break;
+	case 1:
+		this->setCurrentState(new SearchEnemy());
+		break;
+	case 2:
+		this->setCurrentState(new AttackEnemy());
+		break;
+	case 3:
+		this->setCurrentState(new ReloadBullets());
+		break;
 	}
 }
 
@@ -59,6 +80,8 @@ void Soldier::setVisibilityMap()
 	}
 	this->pGrenade = new Grenade(position.getX(), position.getY());
 	this->pGrenade->simulateVisibility(this->maze, this->visibilityMap);
+	delete this->pGrenade;
+	this->pGrenade = nullptr;
 }
 
 void Soldier::loadBullets()
@@ -95,43 +118,24 @@ void Soldier::addBulletsToStock(int numOfBullets)
 
 bool Soldier::isEnemyVisible()
 {
-	int row, col, targetRow, targetCol;
-	double directionAngle;
 	NPC* enemy = this->findEnemy();
 	if (enemy == nullptr)
 	{
 		return false;
 	}
-	Point* enemyPosition = &enemy->getPosition();
 
-	row = this->position.getX();
-	col = this->position.getY();
-	targetRow = enemyPosition->getX();
-	targetCol = enemyPosition->getY();
-	directionAngle = atan2((double)targetRow - (double)row, (double)targetCol - (double)col);
-
-	if (this->pBullet != nullptr)
+	if (this->pGrenade != nullptr)
 	{
-		delete this->pBullet;
+		delete this->pGrenade;
+		this->pGrenade = nullptr;
 	}
-	this->setVisibilityMapToZero(); // rebuild VisibilityMap with grenade instead bullet
-	this->pBullet = new Bullet(this->position, this->position.getY(), this->position.getX(), directionAngle);
-	//this->pBullet = new Bullet(this->position, enemyPosition->getX(), enemyPosition->getY(), directionAngle);
-	this->pBullet->fire();
-	this->pBullet->simulateVisibility(this->maze, this->visibilityMap);
-	/*if (this->distanceFromEnemy() < 2.0)
-	{
-		for (int i = 0; i < MSZ; i++)
-		{
-			for (int j = 0; j < MSZ; j++)
-			{
-				cout << this->visibilityMap[i][j] << " ";
-			}
-			cout << endl;
-		}
-	}*/
+	this->setVisibilityMapToZero();
+	this->pGrenade = new Grenade(this->position.getX(), this->position.getY());
+	this->pGrenade->simulateVisibility(this->maze, this->visibilityMap);
+	delete this->pGrenade;
+	this->pGrenade = nullptr;
 	//cout << this->distanceFromEnemy() << ", " << this->visibilityMap[enemy->getPosition().getY()][enemy->getPosition().getX()] << endl;
-	return this->distanceFromEnemy() < 12.0
+	return this->distanceFromEnemy() < 10.0
 		&& this->visibilityMap[enemy->getPosition().getY()][enemy->getPosition().getX()] == 1;
 }
 
@@ -142,14 +146,12 @@ void Soldier::attack()
 		NPC* enemy = this->findEnemy();
 		if (enemy)
 		{
-			if (this->distanceFromEnemy() < 5.0)
+			if (this->loadedBullets >= Grenade::NUM_OF_BULLETS && this->distanceFromEnemy() < 4.0)
 			{
-				cout << "throwGrenade" << endl;
 				this->throwGrenade(enemy);
 			}
 			else
 			{
-				cout << "shoot" << endl;
 				this->shoot(enemy);
 			}
 		}
@@ -159,8 +161,10 @@ void Soldier::attack()
 bool Soldier::shoot(NPC* enemy)
 {
 	double directionAngle;
+	//cout << "shoot this->loadedBullets: " << this->loadedBullets << endl;
 	if (enemy != nullptr && this->loadedBullets > 0)
 	{
+		//cout << "shoot" << endl;
 		directionAngle = atan2(this->position.getX() - enemy->getPosition().getX(), this->position.getY() - enemy->getPosition().getY());
 		if (this->pBullet != nullptr && !this->pBullet->getIsMoving())
 		{
@@ -190,11 +194,13 @@ bool Soldier::shoot(NPC* enemy)
 
 bool Soldier::throwGrenade(NPC* enemy)
 {
+	//cout << "throwGrenade this->loadedBullets: " << this->loadedBullets << endl;
 	if (this->loadedBullets >= Grenade::NUM_OF_BULLETS)
 	{
 		if (this->pGrenade != nullptr)
 		{
 			delete this->pGrenade;
+			this->pGrenade = nullptr;
 		}
 		this->pGrenade = new Grenade(this->position.getY(), this->position.getX());
 		this->pGrenade->explode();

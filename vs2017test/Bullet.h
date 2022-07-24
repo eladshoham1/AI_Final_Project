@@ -7,7 +7,7 @@
 class Bullet : public Ammo
 {
 private:
-	static constexpr float SPEED = 0.2f;
+	static constexpr float SPEED = 0.1f;
 	Point shootingPosition;
 	double directionAngle;
 	bool isMoving;

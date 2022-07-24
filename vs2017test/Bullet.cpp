@@ -41,6 +41,7 @@ Point* Bullet::move(int** maze)
 		dy = sin(this->directionAngle);
 		this->x += dx * SPEED;
 		this->y += dy * SPEED;
+		//cout << "y: " << (int)this->y << " x: " << (int)this->x << endl;
 		if (maze[(int)this->y][(int)this->x] != SPACE)
 		{
 			this->isMoving = false;
@@ -78,11 +79,10 @@ void Bullet::simulateVisibility(int** maze, double** visibilityMap)
 	{
 		this->x += dx * SPEED;
 		this->y += dy * SPEED;
-		//cout << "x1: " << shootingPosition.getX() << " y1: " << shootingPosition.getY() << " x2: " << (int)x << " y2: " << (int)y << endl;
+
 		visibilityMap[(int)y][(int)x] = 1; // drawing in map
 
 		if (maze[(int)y][(int)x] != SPACE)
 			this->isMoving = false;
 	}
-	//cout << "_________________________________________________________" << endl;
 }

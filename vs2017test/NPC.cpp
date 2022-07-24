@@ -148,16 +148,23 @@ void NPC::setVisibilityMapToZero()
 	}
 }
 
-void NPC::supplyHP(int hp)
+double NPC::supplyHP(int hp)
 {
-	if (this->hp + hp > MAX_HP)
+	double availableHealth = 0;
+	if (!this->isDead())
 	{
-		this->hp = MAX_HP;
+		if (this->hp + hp > MAX_HP)
+		{
+			this->hp = MAX_HP;
+			availableHealth = MAX_HP - this->hp;
+		}
+		else
+		{
+			this->hp += hp;
+			availableHealth = hp;
+		}
 	}
-	else
-	{
-		this->hp += hp;
-	}
+	return availableHealth;
 }
 
 void NPC::setAsDead()
@@ -193,21 +200,34 @@ bool NPC::isAtTarget()
 	return abs(this->position.getX() - this->target.getX()) <= 1 && abs(this->position.getY() - this->target.getY()) <= 1;
 }
 
+bool NPC::isUnderAttack()
+{
+	NPC* enemy = this->findEnemy();
+	return enemy && dynamic_cast<AttackEnemy*>(enemy->getCurrentState());
+}
+
 void NPC::hit(double damage)
 {
-	if (damage < this->hp)
+	if (!this->isDead())
 	{
-		this->hp -= damage;
-	}
-	else
-	{
-		this->hp = 0.0;
+		if (damage < this->hp)
+		{
+			this->hp -= damage;
+		}
+		else
+		{
+			this->hp = 0.0;
+		}
+		if (this->hp == 0.0)
+		{
+			this->setAsDead();
+		}
 	}
 }
 
 void NPC::goToTarget()
 {
-	if (!this->isMoving || this->isAtTarget())
+	if (this->isDead() || !this->isMoving || this->isAtTarget())
 	{
 		return;
 	}
@@ -284,6 +304,8 @@ void NPC::goToTarget()
 
 bool NPC::goToSafePosition()
 {
+	if (this->isDead())
+		return false;
 	Point safestPoisition;
 	double minValue;
 	bool foundFirst = false;
@@ -293,9 +315,9 @@ bool NPC::goToSafePosition()
 	playerRow = this->position.getX();
 	playerCol = this->position.getY();
 
-	for (int r = this->position.getX() - 15 / 2; r <= this->position.getX() + 15 / 2; r++)
+	for (int r = (this->position.getX() - 15) / 2; r <= (this->position.getX() + 15) / 2; r++)
 	{
-		for (int c = this->position.getY() - 15 / 2; c <= this->position.getY() + 15 / 2; c++)
+		for (int c = (this->position.getY() - 15) / 2; c <= (this->position.getY() + 15) / 2; c++)
 		{
 			if (r >= 0 && r < MSZ && c >= 0 && c < MSZ)
 			{
@@ -345,9 +367,9 @@ bool NPC::scanAreaForEnemyGrenades() const
 		if (tempSoldier && tempSoldier->getPGrenade())
 		{
 			grenade = tempSoldier->getPGrenade();
-			for (int row = playerRow - 5 / 2; row <= playerRow + 5 / 2; row++)
+			for (int row = (playerRow - 6) / 2; row <= (playerRow + 6) / 2; row++)
 			{
-				for (int col = playerCol - 5 / 2; col <= playerCol + 5 / 2; col++)
+				for (int col = (playerCol - 6) / 2; col <= (playerCol + 6) / 2; col++)
 				{
 					if (row >= 0 && row < MSZ && col >= 0 && col < MSZ)
 					{
@@ -365,7 +387,17 @@ bool NPC::scanAreaForEnemyGrenades() const
 
 void NPC::play()
 {
-	//cout << typeid(*this).name() + 6 << " (" << typeid(*this->pCurrentState).name() + 6 << ")" << endl;
+	if (this->isDead())
+		return;
+	cout << typeid(*this).name() + 6 << " | State: " << typeid(*this->pCurrentState).name() + 6 << " | HP: " << this->hp << " | ";
+	Soldier* soldier = dynamic_cast<Soldier*>(this);
+	Support* support = dynamic_cast<Support*>(this);
+	if (soldier)
+		cout << "loadedBullets: " << soldier->getLoadedBullets() << " | bulletsInStock: " << soldier->getBulletsInStock();
+	else if (support)
+		cout << "health: " << support->getHealth() << " | ammo: " << support->getAmmo();
+	cout << endl;
+
 	this->pCurrentState->transform(this);
 	if (this->isMoving)
 	{

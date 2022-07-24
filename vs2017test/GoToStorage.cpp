@@ -14,34 +14,22 @@ void GoToStorage::transform(NPC* pn)
 	Support *support = dynamic_cast<Support*>(pn);
 	if (support)
 	{
-		if (!support->scanAreaForEnemyGrenades())
+		if (support->scanAreaForEnemyGrenades())
+			pn->setCurrentState(new GoToSafePlace());
+		else
 		{
 			if (support->isAtTarget())
 			{
-				support->takeHealthFromStorage();
+				support->takeSupplyFromStorage();
 				pn->setCurrentState(new SupplyToSoldier());
 			}
 			else
 			{
 				if (support->getHealth() < 25)
-				{
 					support->goToClosestHealthStorage();
-				}
-				else if (support->getAmmo() < 40)
-				{
+				else if (support->getAmmo() < 25)
 					support->goToClosestAmmoStorage();
-				}
-				else
-				{
-					support->takeHealthFromStorage();
-					pn->setCurrentState(new SupplyToSoldier());
-				}
 			}
-		}
-		else
-		{
-			pn->setCurrentState(new GoToSafePlace());
-			//pn->getCurrentState()->onEnter(pn);
 		}
 	}
 }

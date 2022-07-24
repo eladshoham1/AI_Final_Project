@@ -17,7 +17,7 @@ void SearchEnemy::transform(NPC* pn)
 	{
 		if (soldier->scanAreaForEnemyGrenades() || soldier->getLoadedBullets() == 0)
 			soldier->setCurrentState(new GoToSafePlace());
-		else if (soldier->isEnemyVisible())
+		else if (soldier->isEnemyVisible() || soldier->isUnderAttack())
 		{
 			if (!soldier->hpLastThanHalf() && soldier->hasLoadedBullets())
 			{

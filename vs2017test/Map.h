@@ -43,7 +43,6 @@ public:
 	void digPassages();
 	void placeTeams();
 	void createSecurityMap();
-	//void findClosestEnemy(NPC* npc);
 	void findClosestHealthStorage(Support* support);
 	void findClosestAmmoStorage(Support* support);
 	void showMaze();

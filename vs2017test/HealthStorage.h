@@ -4,7 +4,7 @@
 class HealthStorage : public Storage
 {
 private:
-	static constexpr int INITIAL_AMOUNT = 200;
+	static constexpr int INITIAL_AMOUNT = 250;
 
 public:
 	HealthStorage(const Point& position);

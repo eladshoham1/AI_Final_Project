@@ -14,28 +14,30 @@ void GoToSafePlace::transform(NPC* pn)
 {
 	Soldier *soldier = dynamic_cast<Soldier*>(pn);
 	Support *support = dynamic_cast<Support*>(pn);
+	if (support)
+	{
+		if (support->hpLastThanHalf())
+		{
+			support->takeHealth();
+		}
+	}
 	if (pn->isAtTarget())
 	{
 		if (pn->scanAreaForEnemyGrenades())
-		{
 			pn->setCurrentState(new GoToSafePlace());
-			//pn->getCurrentState()->onEnter(pn);
-		}
 		else
 		{
 			if (soldier)
 			{
 				if (!soldier->hasLoadedBullets() && soldier->hasBulletsInStock())
-				{
 					soldier->setCurrentState(new ReloadBullets());
-					//soldier->getCurrentState()->onEnter(soldier);
-				}
+				else if (soldier->isEnemyVisible() || soldier->isUnderAttack())
+					soldier->setCurrentState(new AttackEnemy());
+				else
+					soldier->setCurrentState(new SearchEnemy());
 			}
 			else if (support)
-			{
 				support->setCurrentState(new SupplyToSoldier());
-				//support->getCurrentState()->onEnter(support);
-			}
 		}
 	}
 }
